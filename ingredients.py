@@ -28,6 +28,8 @@ class ingred:
         self.descriptors = []
         self.alternative = ''
         self.type = ''
+        self.specified = ''
+        self.flags = []
         self.method = []
 
 def convert_to_float(frac_str):

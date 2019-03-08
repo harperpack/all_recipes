@@ -178,7 +178,7 @@ hot_sauces = ['tabasco', 'sriracha', 'hot sauce', "frank's red hot", 'sambal',
 spicy_vegetables = ['guajillo', 'habanero', 'jalapeño', 'scotch bonnet', 'chili',
                     'savina', 'tabasco', 'serrano', 'peperoncino', 'chipotle']
 spicy_seasonings = ['cayenne', 'chile', 'peppercorn', 'horseradish', 'pepper oil',
-                    'red pepper', 'curry powder', 'wasabi', 'chili oil', ]
+                    'red pepper', 'curry powder', 'wasabi', 'chili oil']
 
 def categorize_spice(recipe, spicier=False):
     for ingredient in recipe.ingredients:
