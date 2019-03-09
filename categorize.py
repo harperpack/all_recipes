@@ -51,7 +51,7 @@ breads = ['white bread', 'rye bread', 'wheat bread', 'whole wheat bread', 'pumpe
 bread = breads + mex_bread
 
 pasta = ['pasta', 'macaroni', 'spaghetti', 'fusili', 'penne', 'noodle', 
-         'bowtie', 'linguine']
+         'bowtie', 'linguine', 'lasagna']
 
 grain = ['white rice', 'brown rice', 'wild rice', 'yellow rice', 'quinoa',
          'farro', 'barley', 'wheat', 'bulgur', 'cous cous', 'pearled barley',

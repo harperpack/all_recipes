@@ -35,7 +35,7 @@ def transform_ingredient_vegetarian(ingredient, recipe):
             recipe.add_ingredient(ingredient, 'TBD SPICE')
     elif ingredient.type == 'ham':
         if recipe.meal == 'roast':
-            ingredient.name = ingredient.name.replace('bacon', 'Tofurky ham roast')
+            ingredient.name = ingredient.name.replace('ham', 'Tofurky ham roast')
         else:
             # ADD FUNCTION?
             recipe.replace_ingredient(ingredient, 'seitan')
@@ -72,3 +72,6 @@ def transform_ingredient_vegetarian(ingredient, recipe):
         # ADD FUNCTION?
         recipe.replace_ingredient(ingredient, 'extra-firm tofu')
     return recipe, ingredient
+
+def transform_mexican(recipe):
+    
