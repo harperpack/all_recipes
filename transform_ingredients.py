@@ -12,7 +12,7 @@ def transform_vegetarian(recipe):
             recipe, ingredient = transform_ingredient_vegetarian(recipe, ingredient)
     return recipe
 
-def transform_ingredient_vegetarian(ingredient, recipe):
+def transform_ingredient_vegetarian(recipe, ingredient):
     if ingredient.type == 'red meat':
         if recipe.meal == 'roast' or recipe.meal == 'stew':
             # ADD FUNCTION?
@@ -73,5 +73,46 @@ def transform_ingredient_vegetarian(ingredient, recipe):
         recipe.replace_ingredient(ingredient, 'extra-firm tofu')
     return recipe, ingredient
 
+def transform_healthy(recipe):
+    fruits_or_vegetables = False
+    for ingredient in recipe.ingredients:
+        if 'unhealthy' in ingredient.flags:
+            recipe, ingredient = transform_ingredient_healthy(recipe, ingredient)
+            if ingredient.type == 'fruit' or ingredient.type == 'vegetable':
+                fruits_or_vegetables = True
+    if not fruits_or_vegetables:
+        recipe.add_ingredient('spinach')
+    return recipe
+
+def transform_ingredient_healthy(recipe, ingredient):
+    if ingredient.type in ['pork', 'bacon', 'sausage', 'ham', 'processed meat', 'poultry', 'red meat']:
+        if ingredient.type == 'poultry':
+            if 'thigh' in ingredient.name:
+                ingredient.name = ingredient.name.replace('thigh', 'breast')
+            elif 'wing' in ingredient.name:
+                ingredient.name = ingredient.name.replace('wing', 'breast')
+            elif 'dark' in ingredient.name:
+                ingredient.name = ingredient.name.replace('dark', 'white')
+        else:
+            recipe, ingredient = transform_ingredient_vegtarian(recipe, ingredient)
+    elif ingredient.type == 'bread':
+        ingredient.name = ingredient.name.replace('white', 'whole wheat')
+    elif ingredient.type == 'pasta':
+        name = ingredient.name
+        ingredient.name = ingredient.name.replace(name, 'whole wheat ' + name)
+    elif ingredient.type == 'carb':
+        name = ingredient.name
+        ingredient.name = ingredient.name.replace(name, 'brown rice')
+    elif ingredient.type == 'cheese':
+        # ADD FUNCTION?
+        recipe.replace_ingredient(ingredient, 'cheese')
+    elif ingredient.type == 'dairy':
+        # ADD FUNCTION?
+        recipe.replace_ingredient(ingredient, 'dairy')
+    return recipe, ingredient
+
 def transform_mexican(recipe):
-    
+    for ingredient in recipe.ingredients:
+        if 'un-mexican' in ingredient.flags:
+            recipe, ingredient = transform_ingredient_vegetarian(recipe, ingredient)
+    return recipe
