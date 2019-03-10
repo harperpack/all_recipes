@@ -169,13 +169,13 @@ refined_flours = ['white flour', 'all purpose flour', 'all-purpose flour']
 
 refined_fats = ['vegetable oil', 'margarine']
 
-unhealthy_bases = sugars + refined_flours + refined_fats
-
 healthy_sugar = ['coconut sugar', 'agave nectar', 'honey', 'agave syrup', 
                  'molasses']
 
 sugars = ['sugar', 'powdered sugar', 'brown sugar' 'granulated sugar', 'sugar',
           'high fructose corn syrup', 'stevia', "confecioner's sugar", 'sprinkles']
+
+unhealthy_bases = sugars + refined_flours + refined_fats
 
 hot_sauces = ['tabasco', 'sriracha', 'hot sauce', "frank's red hot", 'sambal',
               'cholula', "valentina's", 'harissa']
@@ -191,7 +191,7 @@ addl_animal_prods = ['foie gras', 'honey', 'furikake', 'bonito', 'confit', 'pât
 
 animal_bases = animal_fats + animal_stock + animal_sauces + addl_animal_prods
 
-non-vegan = animal_proteins + animal_bases
+non_vegan = animal_proteins + animal_bases
 
 bases = base_ingreds + non_mex_bases + mex_base + unhealthy_bases + healthy_sugar + hot_sauces + animal_bases
 
@@ -367,9 +367,9 @@ def categorize_base(ingredient):
     else:
         ingredient.type = 'base'
         if name in non_mex_bases:
-            ingredients.flags.append('un-mexican')
-        elif name in mex_bases:
-            ingredients.flags.append('mexican')
+            ingredient.flags.append('un-mexican')
+        elif name in mex_base:
+            ingredient.flags.append('mexican')
         elif name in healthy_sugar:
             ingredient.type = 'sugar'
     return ingredient
