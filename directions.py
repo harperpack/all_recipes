@@ -13,7 +13,7 @@ import en_core_web_sm
 from bs4 import BeautifulSoup
 import requests
 
-from ingredients import ingred, convert_to_float
+from ingredients import ingred, convert_to_float, new_ingredient
 
 nlp = en_core_web_sm.load()
 
@@ -46,7 +46,7 @@ def load_directions(soup):
 
 # NEED TO MAKE USE OF INGREDIENT LIST TO BETTER CAPTURE INGREDIENTS IN DIRECTIONS
 
-def make_direction(step):
+def make_direction(step, names):
     cook_verbs = ['preheat', 'cook', 'broil', 'roast', 'drain', 'bake',
               'rinse', 'melt', 'stir', 'mix', 'bake', 'simmer', 'season',
               'sauté', 'poach', 'whisk', 'stew']
@@ -55,6 +55,7 @@ def make_direction(step):
     cook_nouns = ['oven', 'saucepan', 'pot', 'dish', 'cooker', 'bowl', 'pan',
               'stove', 'cups']
     cn_qualifiers = ['baking', 'mixing', 'slow']
+    agglomerations = ['mixture', 'sauce', 'contents', 'marinade', 'mix', 'bowl']
     direction = Direction()
     direction.text = step
     doc = nlp(direction.text)
@@ -87,31 +88,55 @@ def make_direction(step):
                 del tokens[j:j+2]
             # may also refer to ingredient quantities - e.g., 'X units of...'
             elif tokens[j+1].lemma_ in measure_words:
-                item = ingred()
                 # if j is followed by measure, it's likely a quantity
-                item.quantity = convert_to_float(tokens[j].text)
-                item.unit = tokens[j+1].lemma_
+                quantity = convert_to_float(tokens[j].text)
+                unit = tokens[j+1].lemma_
                 # check if form of 'X units ingredient'
                 if tokens[j+2].tag_ == 'NN' or tokens[j+2].tag_ == 'NNP':
                     # check if ingredient has multi-part name (e.g., Parm cheese)
                     if j+3 < len(tokens) and tokens[j+3].tag_ == 'NN':
                         name = tokens[j+2].text + ' ' + tokens[j+3].text
-                        item.name = name
+                        item = new_ingredient(name, quantity, unit)
                         del tokens[j:j+4]
                     else:
-                        item.name = tokens[j+2].text
+                        name = tokens[j+2].text
+                        item = new_ingredient(name, quantity, unit)
                         del tokens[j:j+3]
                 # check if form of 'X units OF ingredient'
                 elif tokens[j+2].tag_ == 'IN' and tokens[j+3].tag_ == 'NN' or tokens[j+3].tag_ == 'NNP':
                     # check if ingredient has multi-part name (e.g., Parm cheese)
                     if j+4 < len(tokens) and tokens[j+4].tag_ == 'NN':
                         name = tokens[j+3].text + ' ' + tokens[j+4].text
-                        item.name = name
+                        item = new_ingredient(name, quantity, unit)
                         del tokens[j:j+5]
                     else:
-                        item.name = tokens[j+3].text
+                        name = tokens[j+3].text
+                        item = new_ingredient(name, quantity, unit)
                         del tokens[j:j+4]
                 direction.ingredients.append(item)
+            elif tokens[j+1] == 'of':
+                quantity = convert_to_float(tokens[j].text)
+                if tokens[j+2] == 'the':
+                    if tokens[j+3].lemma_ in agglomerations:
+                        if tokens[j+4].lemma_ in agglomerations:
+                            name = tokens[j+3].text + ' ' + tokens[j+4].text
+                        else:
+                            name = tokens[j+3].text
+                        item = new_ingredient(name, quantity, 'ratio')
+                        item.type = 'combination'
+                    elif tokens[j+4].lemma_ in agglomerations:
+                        if tokens[j+5].lemma_ in agglomerations:
+                            name = tokens[j+4].text + ' ' + tokens[j+5].text
+                        else:
+                            name = tokens[j+4].text
+                        item = new_ingredient(name, quantity, 'ratio')
+                        item.type = 'combination'
+                    elif any(name in tokens[j+3].lemma_ for name in names):
+                        if any(name in tokens[j+4].lemma_ for name in names):
+                            name = tokens[j+3].text + ' ' + tokens[j+4].text
+                        else:
+                            name = tokens[j+3].text
+                        item = new_ingredient(name, quantity, 'ratio')
         # check if token is a cooking implement
         elif tokens[j].text in cook_nouns:
             # check if it has a multi-part name (e.g., 'slow cooker')
