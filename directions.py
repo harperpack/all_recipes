@@ -22,7 +22,7 @@ class Direction:
         self.text = ''
         self.device = ''
         self.actions = []
-        self.duration = ''
+        self.duration = ()
         self.time_unit = ''
         self.ingredients = []
 
@@ -76,13 +76,14 @@ def make_direction(step):
             # often we see "X to Y time_units"
             if tokens[j+1].text == 'to':
                 direction.time_unit = tokens[j+3].lemma_
-                dur = tokens[j].text + ' to ' + tokens[j+2].text
-                direction.duration = dur
+                direction.duration = (int(tokens[j].text),int(tokens[j+2].text))
+#                dur = tokens[j].text + ' to ' + tokens[j+2].text
+#                direction.duration = dur
                 del tokens[j:j+4]
             # may also see "X time_units"
             elif tokens[j+1].lemma_ in time_words:
                 direction.time_unit = tokens[j+1].lemma_
-                direction.duration = tokens[j].text
+                direction.duration = (int(tokens[j].text), int(tokens[j].text))
                 del tokens[j:j+2]
             # may also refer to ingredient quantities - e.g., 'X units of...'
             elif tokens[j+1].lemma_ in measure_words:
