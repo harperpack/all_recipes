@@ -31,6 +31,21 @@ class ingred:
         self.specified = ''
         self.flags = []
         self.method = []
+        self.changed = False
+        self.old = None
+
+def new_ingredient(name, q=None, u=None, p=None, d=None):
+    new = ingred()
+    new.name = name
+    if q:
+        new.quantity = q
+    if u:
+        new.unit = u
+    if p:
+        new.preprocessing = p
+    if d:
+        new.descriptors = d
+    return new
 
 def convert_to_float(frac_str):
     try:
@@ -49,6 +64,37 @@ def convert_to_float(frac_str):
         else:
             sign_mult = 1
         return float(leading) + sign_mult * (float(num) / float(denom))
+
+def rationalize_details(new, servings):
+    if 'mushroom' in new.name:
+        if 'portobello' in new.name:
+            new.quantity = float(1.5 * servings)
+            new.unit = 'discrete'
+            new.preprocessing = []
+            new.descriptors = []
+        elif 'shiitake' in new.name:
+            new.quantity = float(0.5 * servings)
+            new.unit = 'cup'
+            new.preprocessing = ['sliced']
+            new.descriptors = ['fresh']
+    elif 'jackfruit' in new.name:
+        new.quantity = float(int(servings/3))
+        new.unit = 'pound'
+        new.preprocessing = ['drained']
+        new.descriptors = ['young', 'green', 'packed in water']
+    elif 'eggplant' in new.name:
+        new.quantity = float(0.5 * servings)
+        new.unit = 'discrete'
+        # ARE THESE RIGHT?
+#        new.preprocessing = []
+#        new.descriptors = []
+    elif 'tofu' in new.name:
+        new.quantity = float(0.5 * servings)
+        new.unit = 'block'
+        # ARE THESE RIGHT?
+        new.preprocessing.append('drained')
+        new.descriptors.append('extra-firm')
+    return new
 
 def is_bad(tok):
     if tok.pos_ in ['ADJ','PUNCT'] or tok.tag_ in ['CC','VBN']:

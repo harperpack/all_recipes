@@ -6,7 +6,7 @@ Created on Thu Mar  7 00:39:52 2019
 @author: harper
 """
 
-from ingredients import load_ingredients, make_ingredient
+from ingredients import load_ingredients, make_ingredient, new_ingredient
 from directions import load_directions, make_direction
 
 from bs4 import BeautifulSoup
@@ -21,6 +21,10 @@ class Recipe():
         self.primary = ''
         self.meal = ''
         self.directions = []
+    
+    def replace_ingredient(self, ingredient, substitution):
+        sub = new_ingredient(substitution)
+        
 
 def load_recipe(url):
     resp = requests.get(url)
@@ -44,8 +48,12 @@ def get_servings(soup):
 #
 #url2 = 'https://www.allrecipes.com/recipe/8758/white-cheese-chicken-lasagna/'
 #
-#print(get_title(load_recipe(url2)))
-#print(get_servings(load_recipe(url2)))
+print(get_title(load_recipe(url2)))
+print(get_servings(load_recipe(url2)))
+dir_list = load_directions(load_recipe(url2))
+for direction in dir_list:
+    step = make_direction(direction)
+    print(step.text)
 
 # NEED TO FIGURE OUT HOW TO GET PRIMARY AND MEAL
 def make_recipe(url):

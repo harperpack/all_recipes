@@ -46,7 +46,7 @@ def load_directions(soup):
 
 # NEED TO MAKE USE OF INGREDIENT LIST TO BETTER CAPTURE INGREDIENTS IN DIRECTIONS
 
-def make_direction(step, ingredients):
+def make_direction(step):
     cook_verbs = ['preheat', 'cook', 'broil', 'roast', 'drain', 'bake',
               'rinse', 'melt', 'stir', 'mix', 'bake', 'simmer', 'season',
               'sauté', 'poach', 'whisk', 'stew']

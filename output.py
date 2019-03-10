@@ -23,5 +23,5 @@ class Direction:
         self.time_unit = ''
         self.ingredients = []
 
-def print_recipe(ingredients, directions, title, servings, time):
+def print_recipe(recipe):
     print
