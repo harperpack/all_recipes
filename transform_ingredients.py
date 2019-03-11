@@ -63,7 +63,7 @@ def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
     elif ingredient.type == 'shellfish':
         recipe.replace_ingredient(ingredient, 'shiitake mushrooms')
     elif ingredient.type == 'stock':
-        if 'stock' in ingredient.name or 'boilloun' in ingredient.name:
+        if 'stock' in ingredient.name or 'bouillon' in ingredient.name:
             if 'chicken' in ingredient.name:
                 recipe.replace_ingredient(ingredient, new_name='vegetable', old_name='chicken', deflag=unflag)
             elif 'beef' in ingredient.name:
@@ -72,7 +72,7 @@ def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
                 recipe.replace_ingredient(ingredient, new_name='vegetable', old_name='shrimp', deflag=unflag)
         elif 'blood' in ingredient.name or 'bone' in ingredient.name:
             # PRESENTLY UNSUPPORTED
-            recipe.replace_ingredient(ingredient, 'vegetable boilloun cube')
+            recipe.replace_ingredient(ingredient, 'vegetable bouillon cube')
         else:
             # PRESENTLY UNSUPPORTED
             recipe.replace_ingredient(ingredient, 'agar agar')

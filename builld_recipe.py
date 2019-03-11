@@ -14,6 +14,11 @@ from bs4 import BeautifulSoup
 import requests
 import spacy
 
+common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
+                'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"', 
+                ')', '(', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                'stew', 'cubes', 'cube', 'roast', 'bouillon']
+
 class Recipe():
     def __init__(self):
         self.title = ''
@@ -62,10 +67,17 @@ class Recipe():
         if self.replaced:
             #names = [ingredient.name for ingredient in self.replaced]
             for direction in self.directions:
-                if direction.ingredients:
-                    for ingredient in self.replaced:
-                        if ingredient.name in direction.text:
-                            direction.text.replace(ingredient.name, ingredient.new.name)
+                for ingredient in self.replaced:
+                    if ' ' in ingredient.name:
+                        pieces = ingredient.name.split(' ')
+                        for piece in pieces:
+                            if piece not in common_words:
+                                print(piece)
+                                print(direction.text)
+                                if piece in direction.text:
+                                    direction.text = direction.text.replace(piece, ingredient.new.name)
+                    elif ingredient.name in direction.text:
+                        direction.text = direction.text.replace(ingredient.name, ingredient.new.name)
     
 
 def load_recipe(url):
@@ -105,20 +117,20 @@ def make_recipe(url):
     html = load_recipe(url)
     # obtain recipe title
     recipe.title = get_title(html)
-    print(recipe.title)
+#    print(recipe.title)
     # obtain recipe serving size
     recipe.servings = get_servings(html)
-    print(recipe.servings)
+#    print(recipe.servings)
     # load ingrediets
     ingredients = load_ingredients(html)
     for item in ingredients:
         # instatiate each ingredient as ingredient object
         ingredient = make_ingredient(item)
         if ingredient:
-            print(ingredient.name)
+#            print(ingredient.name)
             # NEED TO DEFINE CATEGORIZE INGREDIENT
             ingredient = categorize_ingredient(ingredient)
-            print(ingredient.type)
+#            print(ingredient.type)
             # add ingredient to recipe
             recipe.ingredients.append(ingredient)
     # load directions

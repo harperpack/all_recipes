@@ -197,6 +197,11 @@ def make_ingredient(i):
                     if k.pos_!='NOUN':
                         avoid_list.append(k.text)
         info_struct.name = ''.join(w.text + ' ' for w in newdoc if w.text not in avoid_list and w.pos_ != 'PUNCT')
+#    print('Name:' + info_struct.name)
+#    print('Quantity:' + str(info_struct.quantity))
+#    print('Unit: ' + info_struct.unit)
+#    print('Descriptors: ' + str(info_struct.descriptors))
+#    print('Preprocessing: ' + str(info_struct.preprocessing))
     return info_struct
 
 #tests = load_ingredients(url_test)

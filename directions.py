@@ -137,6 +137,12 @@ def make_direction(step, names):
                         else:
                             name = tokens[j+3].text
                         item = new_ingredient(name, quantity, 'ratio')
+            elif tokens[j+1].tag_ == 'CD' or tokens[j+1].tag_ == 'LS':
+                combined = convert_to_float(tokens[j].text)
+                combined += convert_to_float(tokens[j+1].text)
+                if tokens[j+2] in time_words:
+                    direction.duration = (int(combined), int(combined))
+                    direction.time_unit = tokens[j+2].text
         # check if token is a cooking implement
         elif tokens[j].text in cook_nouns:
             # check if it has a multi-part name (e.g., 'slow cooker')

@@ -22,7 +22,7 @@ veg = ['artichoke', 'asparagus', 'beet', 'bamboo shoots', 'bean sprouts', 'endiv
        'parsnip', 'snow pea', 'sugar snap pea', 'pea', 'bamboo shoot', 'bean sprout',
        'snow peas', 'sugar snap peas', 'potato', 'sweet potato', 'taro', 'pumpkin',
        'radicchio', 'rutabaga', 'shallot', 'squash', 'tomato', 'yam', 'zucchini',
-       'water chestnut']
+       'water chestnut', 'potatoes', 'sweet potatoes']
 
 fruit = ['apple', 'blueberry', 'strawberry', 'blueberries', 'strawberries', 'cherry',
          'citron', 'orange', 'fig', 'raisin', 'grape', 'durian', 'grapefruit',
@@ -184,8 +184,8 @@ hot_sauces = ['tabasco', 'sriracha', 'hot sauce', "frank's red hot", 'sambal',
 
 animal_fats = ['butter', 'lard']
 
-animal_stock = ['blood', 'bone', 'chicken stock', 'beef stock', 'gelatin', 
-                'beef boilloun', 'chicken boilloun', 'shrimp stock']
+animal_stock = ['blood', 'bone', 'bouillon' 'chicken stock', 'beef stock', 'gelatin', 
+                'beef bouillon', 'chicken bouillon', 'shrimp stock']
 
 animal_sauces = ['fish sauce', 'Worcestershire sauce']
 
@@ -235,7 +235,7 @@ def categorize_ingredient(ingredient):
             return categorize_seasoning(ingredient)
         else:
             return categorize_base(ingredient)
-    elif any(item in ingredient.name for item in meat):
+    elif any(item in ingredient.name for item in meat) and 'bouillon' not in ingredient.name:
         # categorize the meat type
         return categorize_meat(ingredient)
     elif any(item in ingredient.name for item in grains): 

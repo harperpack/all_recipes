@@ -16,11 +16,12 @@ from transform import route_transformations
 def launch_recipes():
     url = user_initiation()
     recipe = make_recipe(url)
-    print("Here is the recipe you have selected.")
-    print_recipe(recipe)
+#    print("Here is the recipe you have selected.")
+#    print_recipe(recipe)
     choice = user_options(recipe)
     transformation = user_confirmation(choice, recipe)
     recipe = route_transformations(transformation, recipe)
+    recipe.update_directions()
     print("Here is the transformed recipe!")
     print_recipe(recipe)
 
