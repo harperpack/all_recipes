@@ -128,3 +128,37 @@ def make_recipe(url):
             # add direction to recipe
             recipe.directions.append(direction)
     return recipe
+
+def print_recipe(recipe):
+    print("Here is the transformed recipe!\n\n")
+    print(recipe.title)
+    print("Serves " + str(recipe.servings))
+    print('------------------------------------')
+    print("INGREDIENTS:")
+    for ingredient in recipe.ingredients:
+        if ingredient.unit != 'discrete':
+            output = "   " + str(ingredient.quantity) + ' ' + ingredient.unit + ' of'
+        else:
+            output = "   " + str(ingredient.quantity)
+        if ingredient.descriptors:
+            max_index = len(ingredient.descriptors) - 1
+            for descriptor in ingredient.descriptors:
+                i = ingredient.descriptors.index(descriptor)
+                output += ' ' + descriptor
+                if i < max_index:
+                    output += ','
+        output += ' ' + ingredient.name
+        if ingredient.preprocessing:
+            output += ','
+            max_index = len(ingredient.preprocessing)
+            for step in ingredient.preprocessing:
+                i = ingredient.preprocessing.index(step)
+                output += ' ' + step
+                if i < max_index:
+                    output += 'and'
+        print(output)
+    print("\n\n")
+    print("DIRECTIONS:")
+    step_no = 1
+    for direction in recipe.directions:
+        print("   " + str(step_no) + "] " + direction.text)

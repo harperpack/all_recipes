@@ -30,41 +30,30 @@ resp = requests.get('https://www.allrecipes.com/recipe/8758/white-cheese-chicken
 
 soup = BeautifulSoup(resp.text, "lxml")
 
-#results = soup.find_all('h1', class_='recipe-summary__h1')
-#for i in results:
-#    if len(i.contents) > 0:
-#        title = i.contents
-#
-#results = soup.find('span', class_='toggle-similar__title')
-#for i in results:
-#    if len(i.contents) > 0:
-#        meal = i.contents
-#print(meal)
-#
-#results = soup.find('meta', id='metaRecipeServings')
-#for i in results:
-#    if len(i.contents) > 0:
-#        servings = i.contents
-#print(servings)
-
 title = "Lasagna"
 meal = "Lunch"
 servings = 8
 
-def user_intro(title):
+def user_initiation():
     print("Welcome to the AllRecipes Recipe Transformer.\n")
-    print("Thank you for your interest in the " + title + " recipe!")
+    url = input("Please enter a URL for an AllRecipes recipe:  ")
+    return url
+
+def user_options(recipe):
+    transformations = {'h': '"Healthy"', 'v': 'Vegetarian', 'vgn': 'Vegan',
+                   'm': 'Add Meat', 's': 'Spicy', 'b': 'Bland', 
+                   'a': 'Affordable', 'e': 'Expensive',
+                   '+': 'More Servings', '-': 'Fewer Servings',
+                   'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
+                   'n': 'Do Nothing', 'x': 'Exit'}
+    print("Thank you for your interest in the " + recipe.title + " recipe!\n")
     print("Out of consideration for your personal preferences and predilections, " +
           "we are pleased to offer a select variety of recipe 'transformations'.\n")
-
-def user_options(meal, transformations):
     print("Please find available recipe transformations below: ")
     print('\033[1m')
     print(' Key | Transformation')
     print('\033[0m')
     for key in transformations.keys():
-        if key == 'M' and meal == 'Desserts':
-            continue
         if len(key) > 1:
             print(' ' + key + " | " + transformations[key])
         else:
@@ -80,7 +69,13 @@ def user_options(meal, transformations):
     else:
         return choice.lower()
 
-def user_choice(choice, servings, cuisines, transformations, meal, multiple_choice):
+def user_confirmation(choice, recipe):
+    transformations = {'h': '"Healthy"', 'v': 'Vegetarian', 'vgn': 'Vegan',
+                   'm': 'Add Meat', 's': 'Spicy', 'b': 'Bland', 
+                   'a': 'Affordable', 'e': 'Expensive',
+                   '+': 'More Servings', '-': 'Fewer Servings',
+                   'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
+                   'n': 'Do Nothing', 'x': 'Exit'}
     if choice == 'n':
         print("Got it.  We'll print the recipe as-is!")
         return None
@@ -94,11 +89,11 @@ def user_choice(choice, servings, cuisines, transformations, meal, multiple_choi
             #print("Here's hoping that's just the right accoutrement!")
             return choice
     elif choice in ['+', '-']:
-        return user_servings(servings)
+        return user_servings(recipe.servings)
     elif choice == 'dif':
-        return user_cuisines(cuisines)
+        return user_cuisines()
     elif choice == 'add':
-        return user_multiple_choice(multiple_choice, meal, servings, cuisines, transformations)
+        return user_multiple_choice(recipe)
 
 def user_servings(servings):
     print("The existing recipe calls for " + str(servings) + " servings.")
@@ -114,7 +109,11 @@ def user_servings(servings):
         print("Got it.  We'll scale the recipe by " + str(scale) + "x.")
     return scale
 
-def user_cuisines(cuisines):
+def user_cuisines():
+    cuisines = {'usa': '"American"', 
+                'ita': '"Italian"', 
+                'ind': '"Indian"', 
+                'mex': '"Mexican"'}
     print("We are pleased to offer several cuisines for you to choose from.")
     print("Please note that if you choose a cuisine which is highly similar " +
           " to the cuisine of your recipe, you may not see much of a difference!")
@@ -133,7 +132,12 @@ def user_cuisines(cuisines):
     print("Got it.  We'll transform the recipe to be " + cuisines[choice.lower()] + '.')
     return choice.lower()
 
-def user_multiple_choice(multiple_choice, meal, servings, cuisines, transformations):
+def user_multiple_choice(recipe):
+    multiple_choice = {0: {'h': '"Healthy"', 'n/a': "Not Applicable", 'x': 'Exit'}, 
+                   1: {'v': 'Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
+                   2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
+                   3: {'+': 'More Servings', '-': 'Fewer Servings', 'n/a': "Not Applicable", 'x': 'Exit'},
+                   4: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
     transforms = []
     for i in range(len(multiple_choice.keys())):
         print("Please find available transformations below (" + str(i) + "/" + str(len(multiple_choice.keys())-1) + ")")
@@ -141,8 +145,6 @@ def user_multiple_choice(multiple_choice, meal, servings, cuisines, transformati
         print(' Key | Transformation')
         print('\033[0m')
         for key in multiple_choice[i].keys():
-            if key == 'M' and meal == 'Desserts':
-                continue
             if len(key) > 1:
                 print(' ' + key + " | " + multiple_choice[i][key])
             else:
@@ -159,11 +161,11 @@ def user_multiple_choice(multiple_choice, meal, servings, cuisines, transformati
         elif choice.lower() == 'x':
             user_exit()
         else:
-            spec = user_choice(choice.lower(), servings, cuisines, transformations, meal, multiple_choice)
+            spec = user_confirmation(choice.lower(), recipe)
             if spec:
                 transforms.append(spec)
     if not transforms:
-        return user_choice('n', servings, cuisines, transformations, meal, multiple_choice)
+        return user_confirmation('n', recipe)
     else:
         return transforms
 
@@ -189,6 +191,7 @@ def user_exit():
     time.sleep(3)
     quit()
 
-user_intro(title)
-choice = user_options(meal, transformations)
-transform = user_choice(choice, servings, cuisines, transformations, meal, multiple_choice)
+#OLD
+#user_intro(title)
+#choice = user_options(meal, transformations)
+#transform = user_choice(choice, servings, cuisines, transformations, meal, multiple_choice)
