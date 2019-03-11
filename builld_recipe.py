@@ -13,6 +13,7 @@ from categorize import categorize_ingredient
 from bs4 import BeautifulSoup
 import requests
 import spacy
+import collections
 
 common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
                 'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"', 
@@ -90,7 +91,7 @@ class Recipe():
             for direction in self.directions:
                 for ingredient in self.replaced:
                     for word in ingredient.specified:
-                        if word in direction.text:
+                        if word in direction.text and word not in common_words:
                             direction.text = direction.text.replace(word, ingredient.new.name)
 #                    if ' ' in ingredient.name:
 #                        pieces = ingredient.name.split(' ')
@@ -169,12 +170,13 @@ def make_recipe(url):
     return recipe
 
 def print_recipe(recipe):
+    unusual = False
     if recipe.transformations:
         title = recipe.transformations[0]
         max_index = len(recipe.transformations) - 1
         if max_index > 0:
             for i in range(1, len(recipe.transformations)):
-                output += ', ' + recipe.transformations[i]
+                title += ', ' + recipe.transformations[i]
         title += ' ' + recipe.title
         print(title)
     else:
@@ -184,18 +186,25 @@ def print_recipe(recipe):
     print("INGREDIENTS:")
     for ingredient in recipe.ingredients:
         if ingredient.unit in ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch']:
-            output = "   " + str(ingredient.quantity) + ' ' + ingredient.unit
+            output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.unit.strip()
         else:
-            output = "   " + str(ingredient.quantity)
+            if ingredient.unit == 'discrete':
+                output = "   " + str(ingredient.quantity).strip()
+            else:
+                print("Stahp")
+                output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.name.strip()
+                unusual = True
         if ingredient.descriptors:
             output = ' ' + ingredient.descriptors[0]
             max_index = len(ingredient.descriptors) - 1
             if max_index > 0:
+                output += ','
                 for i in range(1, len(ingredient.descriptors)):
                     output += ' ' + ingredient.descriptors[i]
                     if i < max_index:
                         output += ','
-        output += ' ' + ingredient.name
+        if not unusual:
+            output += ' ' + ingredient.name.strip()
         if ingredient.preprocessing:
             output += ','
             max_index = len(ingredient.preprocessing) - 1

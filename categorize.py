@@ -245,9 +245,13 @@ def categorize_ingredient(ingredient):
             return categorize_seasoning(ingredient)
         else:
             return categorize_base(ingredient)
-    elif any(item in name for item in meat) and 'bouillon' not in name:
-        # categorize the meat type
-        return categorize_meat(ingredient)
+    elif any(item in name for item in meat):
+        # ensure stock is not seen as meat
+        if any(item in name for item in ['broth', 'stock', 'bouillon']):
+            return categorize_base(ingredient)
+        else:
+            # categorize the meat type
+            return categorize_meat(ingredient)
     elif any(item in name for item in grains): 
         # categorize the grain type
         return categorize_grain(ingredient)

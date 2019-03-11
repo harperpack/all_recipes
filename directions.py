@@ -115,34 +115,45 @@ def make_direction(step, names):
                         del tokens[j:j+4]
                     direction.ingredients.append(item)
             elif tokens[j+1].text == 'of':
+                jth = 0
                 quantity = convert_to_float(tokens[j].text)
                 if tokens[j+2].text == 'the':
                     if tokens[j+3].lemma_ in agglomerations:
                         if tokens[j+4].lemma_ in agglomerations:
                             name = tokens[j+3].text + ' ' + tokens[j+4].text
+                            jth = 5
                         else:
                             name = tokens[j+3].text
+                            jth = 4
                         item = new_ingredient(name, quantity, 'ratio')
                         item.type = 'combination'
+                        del tokens[j:j+jth]
                     elif tokens[j+4].lemma_ in agglomerations:
                         if tokens[j+5].lemma_ in agglomerations:
                             name = tokens[j+4].text + ' ' + tokens[j+5].text
+                            jth = 6
                         else:
                             name = tokens[j+4].text
+                            jth = 5
                         item = new_ingredient(name, quantity, 'ratio')
                         item.type = 'combination'
+                        del tokens[j:j+jth]
                     elif any(name in tokens[j+3].lemma_ for name in names):
                         if any(name in tokens[j+4].lemma_ for name in names):
                             name = tokens[j+3].text + ' ' + tokens[j+4].text
+                            jth = 5
                         else:
                             name = tokens[j+3].text
+                            jth = 4
                         item = new_ingredient(name, quantity, 'ratio')
+                        del tokens[j:j+jth]
             elif tokens[j+1].tag_ == 'CD' or tokens[j+1].tag_ == 'LS':
                 combined = convert_to_float(tokens[j].text)
                 combined += convert_to_float(tokens[j+1].text)
                 if tokens[j+2].lemma_ in time_words:
                     direction.duration = (int(combined), int(combined))
                     direction.time_unit = tokens[j+2].text
+                    del tokens[j:j+3]
         # check if token is a cooking implement
         elif tokens[j].text in cook_nouns:
             # check if it has a multi-part name (e.g., 'slow cooker')

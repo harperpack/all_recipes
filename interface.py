@@ -77,15 +77,15 @@ def user_confirmation(choice, recipe):
                    'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
                    'n': 'Do Nothing', 'x': 'Exit'}
     if choice == 'n':
-        print("Got it.  We'll print the recipe as-is!")
+        print("Got it.  We'll print the recipe as-is!\n")
         return None
     elif choice not in ['+', '-', 'add', 'dif']:
         if choice != 'm':
-            print("Got it.  We'll transform the recipe to be " + transformations[choice].lower() + '.')
+            print("Got it.  We'll transform the recipe to be " + transformations[choice].lower() + '.\n')
             #print("Fingers crossed it turns out well...")
             return choice
         else:
-            print("Got it.  We'll add meat to the recipe!")
+            print("Got it.  We'll add meat to the recipe!\n")
             #print("Here's hoping that's just the right accoutrement!")
             return choice
     elif choice in ['+', '-']:
@@ -105,9 +105,9 @@ def user_servings(recipe):
     scale = int(pref) / int(recipe.servings)
     recipe.servings = int(pref)
     if scale >= 1:
-        print("Got it.  We'll scale the recipe by " + str(int(scale)) + "x.")
+        print("Got it.  We'll scale the recipe by " + str(int(scale)) + "x.\n")
     else:
-        print("Got it.  We'll scale the recipe by " + str(scale) + "x.")
+        print("Got it.  We'll scale the recipe by " + str(scale) + "x.\n")
     return scale
 
 def user_cuisines():
@@ -130,7 +130,7 @@ def user_cuisines():
         print("We apologize; we cannot recognize your specified cuisine.")
         choice = input("Please enter the key (to the left of the | ) to specify which " + 
                    "cuisine type you would like us to prepare:  ")
-    print("Got it.  We'll transform the recipe to be " + cuisines[choice.lower()] + '.')
+    print("Got it.  We'll transform the recipe to be " + cuisines[choice.lower()] + '.\n')
     return choice.lower()
 
 def user_multiple_choice(recipe):
@@ -157,7 +157,7 @@ def user_multiple_choice(recipe):
             choice = input("Please enter the key (to the left of the | ) to specify which " + 
                        "transformation you would like us to prepare:  ")
         if choice.lower() == 'na':
-            print("Ok, let's look at the next set of transformation options.")
+            print("\nOk, let's look at the next set of transformation options.")
             continue
         elif choice.lower() == 'x':
             user_exit()
