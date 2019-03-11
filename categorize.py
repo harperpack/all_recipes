@@ -183,7 +183,7 @@ hot_sauces = ['tabasco', 'sriracha', 'hot sauce', "frank's red hot", 'sambal',
 animal_fats = ['butter', 'lard']
 
 animal_stock = ['blood', 'bone', 'chicken stock', 'beef stock', 'gelatin', 
-                'beef boilloun', 'chicken boilloun']
+                'beef boilloun', 'chicken boilloun', 'shrimp stock']
 
 animal_sauces = ['fish sauce', 'Worcestershire sauce']
 

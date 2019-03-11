@@ -6,8 +6,9 @@ Created on Thu Mar  7 00:39:52 2019
 @author: harper
 """
 
-from ingredients import load_ingredients, make_ingredient, new_ingredient
+from ingredients import load_ingredients, make_ingredient, new_ingredient, rationalize_details
 from directions import load_directions, make_direction
+from categorize import categorize_ingredient
 
 from bs4 import BeautifulSoup
 import requests
@@ -18,13 +19,54 @@ class Recipe():
         self.title = ''
         self.servings = 0
         self.ingredients = []
+        self.replaced = []
         self.primary = ''
         self.meal = ''
         self.directions = []
     
-    def replace_ingredient(self, ingredient, substitution):
-        sub = new_ingredient(substitution)
-        
+    def check_duplicates(self, potential_duplicate):
+        for ingredient in self.ingredients:
+            if ingredient.name == potential_duplicate.name:
+                return ingredient
+        return None
+    
+    def swap(self, old, new):
+        indx = self.ingredients.index(old)
+        self.ingredients[indx] = new
+        self.replaced.append(old)
+    
+    def replace_ingredient(self, old, new_name, old_name=None, deflag=None):
+        # IF NOT OLD_NAME, IT'S A NEW INGREDIENT
+        if not old_name:
+            sub = new_ingredient(new_name, old.quantity, old.unit, old.preprocessing, old.descriptors)
+            sub = categorize_ingredient(sub)
+            sub.old = old
+            old.new = sub
+            sub = rationalize_details(sub, self.servings)
+        # ASSUME THE INGREDIENT IN THIS CASE IS ALL BUT IDENTICAL - E.G., VEGETABLE BROTH FOR BEEF BROTH
+        else:
+            updated = old.name.replace(old_name, new_name)
+            sub = new_ingredient(updated, old.quantity, old.unit, old.preprocessing, old.descriptors)
+            sub.type = old.type
+            sub.flags = [flag for flag in old.flags if flag not in deflag]
+            sub.old = old
+            old.new = sub
+        check = self.check_duplicates(sub)
+        if check:
+            # NEED TO MAKE FUNCTION
+            check.more(sub.quantity, sub.unit)
+        else:
+            self.swap(old, sub)
+    
+    def update_directions(self):
+        if self.replaced:
+            #names = [ingredient.name for ingredient in self.replaced]
+            for direction in self.directions:
+                if direction.ingredients:
+                    for ingredient in self.replaced:
+                        if ingredient.name in direction.text:
+                            direction.text.replace(ingredient.name, ingredient.new.name)
+    
 
 def load_recipe(url):
     resp = requests.get(url)
@@ -48,12 +90,12 @@ def get_servings(soup):
 #
 #url2 = 'https://www.allrecipes.com/recipe/8758/white-cheese-chicken-lasagna/'
 #
-print(get_title(load_recipe(url2)))
-print(get_servings(load_recipe(url2)))
-dir_list = load_directions(load_recipe(url2))
-for direction in dir_list:
-    step = make_direction(direction)
-    print(step.text)
+#print(get_title(load_recipe(url2)))
+#print(get_servings(load_recipe(url2)))
+#dir_list = load_directions(load_recipe(url2))
+#for direction in dir_list:
+#    step = make_direction(direction)
+#    print(step.text)
 
 # NEED TO FIGURE OUT HOW TO GET PRIMARY AND MEAL
 def make_recipe(url):
@@ -77,9 +119,11 @@ def make_recipe(url):
             recipe.ingredients.append(ingredient)
     # load directions
     directions = load_directions(html)
+    # build list of ingredient names to aid in parsing directions
+    names = [ingredient.name for ingredient in recipe.ingredients]
     for step in directions:
         # instantiate each direction as direction object
-        direction = make_direction(step)
+        direction = make_direction(step, names)
         if direction:
             # add direction to recipe
             recipe.directions.append(direction)

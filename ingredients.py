@@ -31,8 +31,8 @@ class ingred:
         self.specified = ''
         self.flags = []
         self.method = []
-        self.changed = False
         self.old = None
+        self.new = None
 
 def new_ingredient(name, q=None, u=None, p=None, d=None):
     new = ingred()
@@ -94,6 +94,18 @@ def rationalize_details(new, servings):
         # ARE THESE RIGHT?
         new.preprocessing.append('drained')
         new.descriptors.append('extra-firm')
+    elif 'olive oil' in new.name:
+        if 'oil' not in new.old.name:
+            if new.old.unit in ['cup','teaspoon','tablespoon', 'tsp', 'tbsp']:
+                new.quantity = 0.75 * new.old.quantity
+            elif new.old.unit == 'stick':
+                q = 8 * new.old.quantity
+                new.quantity = q * 0.75
+                new.unit = 'tablespoon'
+            elif new.old.unit == 'inch':
+                q = 1.6 * new.old.quantity
+                new.quantity = q * 0.75
+                new.unit = 'tablespoon'
     return new
 
 def is_bad(tok):
