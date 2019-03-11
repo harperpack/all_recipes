@@ -17,7 +17,7 @@ import spacy
 common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
                 'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"', 
                 ')', '(', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-                'stew', 'cubes', 'cube', 'roast', 'bouillon']
+                'stew', 'cubes', 'cube', 'roast', 'bouillon', 'can', 'bottle']
 
 class Recipe():
     def __init__(self):
@@ -28,6 +28,7 @@ class Recipe():
         self.primary = ''
         self.meal = ''
         self.directions = []
+        self.transformations = []
     
     def check_duplicates(self, potential_duplicate):
         for ingredient in self.ingredients:
@@ -39,6 +40,25 @@ class Recipe():
         indx = self.ingredients.index(old)
         self.ingredients[indx] = new
         self.replaced.append(old)
+    
+    def identify_words_for_replacement(self, old, new):
+        uniques = []
+        if ' ' in old.name:
+            old_words = old.name.split(' ')
+        else:
+            old_words = old.name
+        if ' ' in new.name:
+            new_words = new.name.split(' ')
+        else:
+            new_words = new.name
+        if isinstance(old_words, list):
+            for word in old_words:
+                if word not in new_words:
+                    uniques.append(word)
+        else:
+            if old_words not in new_words:
+                uniques.append(old_words)
+        old.specified = uniques
     
     def replace_ingredient(self, old, new_name, old_name=None, deflag=None):
         # IF NOT OLD_NAME, IT'S A NEW INGREDIENT
@@ -56,6 +76,7 @@ class Recipe():
             sub.flags = [flag for flag in old.flags if flag not in deflag]
             sub.old = old
             old.new = sub
+        self.identify_words_for_replacement(old, sub)
         check = self.check_duplicates(sub)
         if check:
             # NEED TO MAKE FUNCTION
@@ -68,17 +89,19 @@ class Recipe():
             #names = [ingredient.name for ingredient in self.replaced]
             for direction in self.directions:
                 for ingredient in self.replaced:
-                    if ' ' in ingredient.name:
-                        pieces = ingredient.name.split(' ')
-                        for piece in pieces:
-                            if piece not in common_words:
-                                print(piece)
-                                print(direction.text)
-                                if piece in direction.text:
-                                    direction.text = direction.text.replace(piece, ingredient.new.name)
-                    elif ingredient.name in direction.text:
-                        direction.text = direction.text.replace(ingredient.name, ingredient.new.name)
-    
+                    for word in ingredient.specified:
+                        if word in direction.text:
+                            direction.text = direction.text.replace(word, ingredient.new.name)
+#                    if ' ' in ingredient.name:
+#                        pieces = ingredient.name.split(' ')
+#                        for piece in pieces:
+#                            if piece not in common_words:
+##                                print(piece)
+##                                print(direction.text)
+#                                if piece in direction.text:
+#                                    direction.text = direction.text.replace(piece, ingredient.new.name)
+#                    elif ingredient.name in direction.text:
+#                        direction.text = direction.text.replace(ingredient.name, ingredient.new.name)
 
 def load_recipe(url):
     resp = requests.get(url)
@@ -127,10 +150,10 @@ def make_recipe(url):
         # instatiate each ingredient as ingredient object
         ingredient = make_ingredient(item)
         if ingredient:
-#            print(ingredient.name)
+            print(ingredient.name)
             # NEED TO DEFINE CATEGORIZE INGREDIENT
             ingredient = categorize_ingredient(ingredient)
-#            print(ingredient.type)
+            print(ingredient.type)
             # add ingredient to recipe
             recipe.ingredients.append(ingredient)
     # load directions
@@ -146,22 +169,32 @@ def make_recipe(url):
     return recipe
 
 def print_recipe(recipe):
-    print(recipe.title)
+    if recipe.transformations:
+        title = recipe.transformations[0]
+        max_index = len(recipe.transformations) - 1
+        if max_index > 0:
+            for i in range(1, len(recipe.transformations)):
+                output += ', ' + recipe.transformations[i]
+        title += ' ' + recipe.title
+        print(title)
+    else:
+        print(recipe.title)
     print("Serves " + str(recipe.servings))
     print('------------------------------------')
     print("INGREDIENTS:")
     for ingredient in recipe.ingredients:
-        if ingredient.unit != 'discrete':
-            output = "   " + str(ingredient.quantity) + ' ' + ingredient.unit + ' of'
+        if ingredient.unit in ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch']:
+            output = "   " + str(ingredient.quantity) + ' ' + ingredient.unit
         else:
             output = "   " + str(ingredient.quantity)
         if ingredient.descriptors:
+            output = ' ' + ingredient.descriptors[0]
             max_index = len(ingredient.descriptors) - 1
-            for descriptor in ingredient.descriptors:
-                i = ingredient.descriptors.index(descriptor)
-                output += ' ' + descriptor
-                if i < max_index:
-                    output += ','
+            if max_index > 0:
+                for i in range(1, len(ingredient.descriptors)):
+                    output += ' ' + ingredient.descriptors[i]
+                    if i < max_index:
+                        output += ','
         output += ' ' + ingredient.name
         if ingredient.preprocessing:
             output += ','

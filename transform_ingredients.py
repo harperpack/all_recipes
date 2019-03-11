@@ -7,6 +7,7 @@ Created on Fri Mar  8 09:14:49 2019
 """
 
 def transform_vegetarian(recipe, vgn=False):
+    recipe.transformations.append('Vegetarian')
     for ingredient in recipe.ingredients:
         if 'non-veg' in ingredient.flags:
             recipe, ingredient = transform_ingredient_vegetarian(recipe, ingredient, vgn)
@@ -81,6 +82,7 @@ def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
     return recipe, ingredient
 
 def transform_healthy(recipe):
+    recipe.transformations.append('Healthy')
     fruits_or_vegetables = False
     for ingredient in recipe.ingredients:
         if 'unhealthy' in ingredient.flags:

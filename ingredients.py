@@ -77,28 +77,28 @@ def convert_to_float(frac_str):
 def rationalize_details(new, servings):
     if 'mushroom' in new.name:
         if 'portobello' in new.name:
-            new.quantity = float(1.5 * servings)
+            new.quantity = float(1.5 * int(servings))
             new.unit = 'discrete'
             new.preprocessing = []
             new.descriptors = []
         elif 'shiitake' in new.name:
-            new.quantity = float(0.5 * servings)
+            new.quantity = float(0.5 * int(servings))
             new.unit = 'cup'
             new.preprocessing = ['sliced']
             new.descriptors = ['fresh']
     elif 'jackfruit' in new.name:
-        new.quantity = float(int(servings/3))
+        new.quantity = float(int(servings)/3)
         new.unit = 'pound'
         new.preprocessing = ['drained']
         new.descriptors = ['young', 'green', 'packed in water']
     elif 'eggplant' in new.name:
-        new.quantity = float(0.5 * servings)
+        new.quantity = float(0.5 * int(servings))
         new.unit = 'discrete'
         # ARE THESE RIGHT?
 #        new.preprocessing = []
 #        new.descriptors = []
     elif 'tofu' in new.name:
-        new.quantity = float(0.5 * servings)
+        new.quantity = float(0.5 * int(servings))
         new.unit = 'block'
         # ARE THESE RIGHT?
         new.preprocessing.append('drained')

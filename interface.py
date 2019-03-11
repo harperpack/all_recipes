@@ -190,7 +190,7 @@ def user_exit():
     time.sleep(1)
     print("Preparing to exit...")
     time.sleep(3)
-    quit()
+    raise SystemExit()
 
 #OLD
 #user_intro(title)

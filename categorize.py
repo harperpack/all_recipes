@@ -52,7 +52,8 @@ mex_bread = ['tortilla', 'chalupa', 'arepa', 'taco shell', 'taco', 'torta']
 sweet_bread = ['donut']
 
 white_bread = ['white bread', 'kaiser roll', 'bagel', 'wedge', 'croissant', 
-               'naan','potato bread', 'ciabatta bread']
+               'naan','potato bread', 'ciabatta bread', 'hot dog buns', 'bun',
+               'hamburger buns']
 
 whole_bread = ['rye bread', 'marbled rye bread', 'pumpernickel', 
                'whole wheat bread']
@@ -72,7 +73,7 @@ grain = ['white rice', 'brown rice', 'wild rice', 'yellow rice', 'quinoa',
 grains = grain + pasta + mex_grains
 
 red_meat = ['beef', 'pork', 'lamb', 'veal', 'venison', 'rabbit', 'goat', 
-            'mutton', 'boar', 'buffalo', 'ox', 'calf', 'steak']
+            'mutton', 'boar', 'buffalo', 'ox', 'calf', 'steak', 'tenderloin']
 
 processed_meat = ['sausage', 'ham', 'bacon', 'salami', 'bologna', 'corned',
                   'canned', 'jerky', 'chorizo', 'ground beef', 'canadian bacon']
@@ -229,24 +230,33 @@ class ingred:
         self.flags = []
         self.method = []
 
+def in_other(name, category):
+    all_types = meat + seasonings + bases + grains + dairy + fruits_and_vegetables
+    all_types -= category
+    if name in all_types:
+        return True
+    else:
+        return False
+
 def categorize_ingredient(ingredient):
+    name = ingredient.name.lower()
     if ingredient.unit in tiny_measures:
-        if any(item in ingredient.name for item in seasonings):
+        if any(item in name for item in seasonings):
             return categorize_seasoning(ingredient)
         else:
             return categorize_base(ingredient)
-    elif any(item in ingredient.name for item in meat) and 'bouillon' not in ingredient.name:
+    elif any(item in name for item in meat) and 'bouillon' not in name:
         # categorize the meat type
         return categorize_meat(ingredient)
-    elif any(item in ingredient.name for item in grains): 
+    elif any(item in name for item in grains): 
         # categorize the grain type
         return categorize_grain(ingredient)
-    elif any(item in ingredient.name for item in bases):
+    elif any(item in name for item in bases):
         return categorize_base(ingredient)
-    elif any(item in ingredient.name for item in dairy):
+    elif any(item in name for item in dairy):
         # categorize the dairy type
         return categorize_dairy(ingredient)
-    elif any(item in ingredient.name for item in fruits_and_vegetables):
+    elif any(item in name for item in fruits_and_vegetables):
         # categorize the fruits and veggies
         return categorize_fruits_and_vegetables(ingredient)
     else:
@@ -377,6 +387,8 @@ def categorize_base(ingredient):
             ingredient.flags.append('mexican')
         elif any(item in name for item in healthy_sugar):
             ingredient.type = 'sugar'
+        elif 'sauce' in name:
+            ingredient.type = 'sauce'
     return ingredient
 
 def categorize_other(ingredient):

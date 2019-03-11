@@ -114,9 +114,9 @@ def make_direction(step, names):
                         item = new_ingredient(name, quantity, unit)
                         del tokens[j:j+4]
                     direction.ingredients.append(item)
-            elif tokens[j+1] == 'of':
+            elif tokens[j+1].text == 'of':
                 quantity = convert_to_float(tokens[j].text)
-                if tokens[j+2] == 'the':
+                if tokens[j+2].text == 'the':
                     if tokens[j+3].lemma_ in agglomerations:
                         if tokens[j+4].lemma_ in agglomerations:
                             name = tokens[j+3].text + ' ' + tokens[j+4].text
@@ -140,7 +140,7 @@ def make_direction(step, names):
             elif tokens[j+1].tag_ == 'CD' or tokens[j+1].tag_ == 'LS':
                 combined = convert_to_float(tokens[j].text)
                 combined += convert_to_float(tokens[j+1].text)
-                if tokens[j+2] in time_words:
+                if tokens[j+2].lemma_ in time_words:
                     direction.duration = (int(combined), int(combined))
                     direction.time_unit = tokens[j+2].text
         # check if token is a cooking implement
