@@ -54,7 +54,7 @@ class Recipe():
         check = self.check_duplicates(sub)
         if check:
             # NEED TO MAKE FUNCTION
-            check.more(sub.quantity, sub.unit)
+            check.more(sub)
         else:
             self.swap(old, sub)
     
@@ -105,16 +105,20 @@ def make_recipe(url):
     html = load_recipe(url)
     # obtain recipe title
     recipe.title = get_title(html)
+    print(recipe.title)
     # obtain recipe serving size
     recipe.servings = get_servings(html)
+    print(recipe.servings)
     # load ingrediets
     ingredients = load_ingredients(html)
     for item in ingredients:
         # instatiate each ingredient as ingredient object
         ingredient = make_ingredient(item)
         if ingredient:
+            print(ingredient.name)
             # NEED TO DEFINE CATEGORIZE INGREDIENT
             ingredient = categorize_ingredient(ingredient)
+            print(ingredient.type)
             # add ingredient to recipe
             recipe.ingredients.append(ingredient)
     # load directions
@@ -130,7 +134,6 @@ def make_recipe(url):
     return recipe
 
 def print_recipe(recipe):
-    print("Here is the transformed recipe!\n\n")
     print(recipe.title)
     print("Serves " + str(recipe.servings))
     print('------------------------------------')
@@ -150,15 +153,16 @@ def print_recipe(recipe):
         output += ' ' + ingredient.name
         if ingredient.preprocessing:
             output += ','
-            max_index = len(ingredient.preprocessing)
+            max_index = len(ingredient.preprocessing) - 1
             for step in ingredient.preprocessing:
                 i = ingredient.preprocessing.index(step)
                 output += ' ' + step
                 if i < max_index:
                     output += 'and'
         print(output)
-    print("\n\n")
+    print("\n")
     print("DIRECTIONS:")
     step_no = 1
     for direction in recipe.directions:
         print("   " + str(step_no) + "] " + direction.text)
+        step_no += 1

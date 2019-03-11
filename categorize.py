@@ -146,6 +146,8 @@ tiny_measures = ['teaspoon','tablespoon','pinch', 'taste', 'soupçon', 'soupcon'
 spicy_seasonings = ['cayenne', 'chile', 'peppercorn', 'horseradish', 'pepper oil',
                     'red pepper', 'curry powder', 'wasabi', 'chili oil']
 
+seasonings = general_seasonings + non_mex_seasonings + spicy_seasonings
+
 base_ingreds = ['gravy', 'barbecue sauce', 'lemon juice', 'lime juice',
                 'cocktail sauce', 'sauce', 'oil', 'vanilla extract', 'tomato paste',
                 'steak sauce', 'coffee sauce', 'mint sauce', 'tomato sauce', 
@@ -229,21 +231,24 @@ class ingred:
 
 def categorize_ingredient(ingredient):
     if ingredient.unit in tiny_measures:
-        return categorize_seasoning(ingredient)
-    elif ingredient.name in meat:
+        if any(item in ingredient.name for item in seasonings):
+            return categorize_seasoning(ingredient)
+        else:
+            return categorize_base(ingredient)
+    elif any(item in ingredient.name for item in meat):
         # categorize the meat type
         return categorize_meat(ingredient)
-    elif ingredient.name in grains:
+    elif any(item in ingredient.name for item in grains): 
         # categorize the grain type
         return categorize_grain(ingredient)
-    elif ingredient.name in bases:
+    elif any(item in ingredient.name for item in bases):
         return categorize_base(ingredient)
-    elif ingredient.name in dairy:
+    elif any(item in ingredient.name for item in dairy):
         # categorize the dairy type
         return categorize_dairy(ingredient)
-    elif ingredient.name in fruits_and_vegetables:
+    elif any(item in ingredient.name for item in fruits_and_vegetables):
         # categorize the fruits and veggies
-        categorize_fruits_and_vegetables(ingredient)
+        return categorize_fruits_and_vegetables(ingredient)
     else:
         return categorize_other(ingredient)
 
@@ -251,9 +256,9 @@ def categorize_ingredient(ingredient):
 def categorize_seasoning(ingredient):
     name = ingredient.name.lower()
     ingredient.type = 'seasoning'
-    if name in spicy_seasonings:
+    if any(item in name for item in spicy_seasonings):
         ingredient.flags.append('spicy')
-    if name in non_mex_seasonings:
+    if any(item in name for item in non_mex_seasonings):
         ingredient.flags.append('un-mexican')
     return ingredient
 
@@ -261,11 +266,11 @@ def categorize_meat(ingredient):
     name = ingredient.name.lower()
     ingredient.flags.append('non-veg')
     ingredient.flags.append('unhealthy')
-    if name != 'pork' and name in red_meat:
+    if 'pork' not in name and any(item in name for item in red_meat):
         ingredient.type = 'red meat'
     elif 'pork' in name:
         ingredient.type = 'pork'
-    elif name in processed_meat:
+    elif any(item in name for item in processed_meat):
         if 'bacon' in name:
             ingredient.type = 'bacon'
         elif 'sausage' in name:
@@ -275,28 +280,28 @@ def categorize_meat(ingredient):
             ingredient.type = 'ham'
         else:
             ingredient.type = 'processed meat'
-    elif name in fish:
+    elif any(item in name for item in fish):
         ingredient.type = 'fish'
         ingredient.flags.remove('unhealthy')
-    elif name in shellfish:
+    elif any(item in name for item in shellfish):
         ingredient.type = 'shellfish'
         ingredient.flags.remove('unhealthy')
-    elif name in poultry:
+    elif any(item in name for item in poultry):
         ingredient.type = 'poultry'
-        if name not in dark_meat:
+        if not any(item in name for item in dark_meat):
             ingredient.flags.remove('unhealthy')
     return ingredient
 
 def categorize_grain(ingredient):
     name = ingredient.name.lower()
     # check if bread
-    if name in bread:
+    if any(item in name for item in bread):
         ingredient.type = 'bread'
         # check if white bread:
         if name in white_bread:
             # white breads are made from refined grains which are ostensibly unhealthy
             ingredient.flags.append('unhealthy')
-    elif name in pasta:
+    elif any(item in name for item in pasta):
         ingredient.type = 'pasta'
         # pasta shall not be mexican, unless it is fideo
         if 'fideo' not in name:
@@ -307,7 +312,7 @@ def categorize_grain(ingredient):
     else:
         ingredient.type = 'carb'
         # check if carb is non-mexican; presumed otherwise to be healthy and veg
-        if name not in mex_grains:
+        if not any(item in name for item in mex_grains):
             ingredient.flags.append('un-mexican')
     return ingredient
 
@@ -317,9 +322,9 @@ def categorize_dairy(ingredient):
     if 'skim' not in name:
         # presume full-fat dairy is unhealthy
         ingredient.flags.append('unhealthy')
-    if name in cheese:
+    if any(item in name for item in cheese):
         ingredient.type = 'cheese'
-        if name not in mex_cheese:
+        if not any(item in name for item in mex_cheese):
             ingredient.flags.append('un-mexican')
     else:
         ingredient.type = 'dairy'
@@ -330,59 +335,59 @@ def categorize_dairy(ingredient):
 
 def categorize_fruits_and_vegetables(ingredient):
     name = ingredient.name.lower()
-    if name in vegetables:
+    if any(item in name for item in vegetables):
         ingredient.type = 'vegetable'
-        if name not in mex_veg:
+        if not any(item in name for item in mex_veg):
             ingredient.flags.append('un-mexican')
     else:
         ingredient.type = 'fruit'
-        if name not in mex_fruit:
+        if not any(item in name for item in mex_fruit):
             ingredient.flags.append('un-mexican')
     return ingredient
 
 def categorize_base(ingredient):
     name = ingredient.name.lower()
-    if name in animal_bases:
+    if any(item in name for item in animal_bases):
         ingredient.flags.append('non-vgn')
-        if name in animal_fats:
+        if any(item in name for item in animal_fats):
             ingredient.type = 'fat'
-        elif name in animal_stock:
+        elif any(item in name for item in animal_stock):
             ingredient.type = 'stock'
             ingredient.flags.append('non-veg')
-        elif name in animal_sauces:
+        elif any(item in name for item in animal_sauces):
             ingredient.type = 'sauce'
         else:
             ingredient.type = 'base'
-    elif name in unhealthy_bases:
+    elif any(item in name for item in unhealthy_bases):
         ingredient.flags.append('unhealthy')
-        if name in sugars:
+        if any(item in name for item in sugars):
             ingredient.type = 'sugar'
-        elif name in refined_fats:
+        elif any(item in name for item in refined_fats):
             ingredient.type = 'fat'
         else:
             ingredient.type = 'flour'
-    elif name in hot_sauces:
+    elif any(item in name for item in hot_sauces):
         ingredient.flags.append('spicy')
         ingredient.type = 'sauce'
     else:
         ingredient.type = 'base'
-        if name in non_mex_bases:
+        if any(item in name for item in non_mex_bases):
             ingredient.flags.append('un-mexican')
-        elif name in mex_base:
+        elif any(item in name for item in mex_base):
             ingredient.flags.append('mexican')
-        elif name in healthy_sugar:
+        elif any(item in name for item in healthy_sugar):
             ingredient.type = 'sugar'
     return ingredient
 
 def categorize_other(ingredient):
     name = ingredient.name.lower()
-    if name in nuts_and_seeds:
+    if any(item in name for item in nuts_and_seeds):
         if name in nut:
             ingredient.type = 'nuts'
         else:
             ingredient.type = 'seeds'
-    elif name in legumes:
-        if name in beans:
+    elif any(item in name for item in legumes):
+        if any(item in name for item in beans):
             ingredient.type = 'beans'
         else:
             ingredient.type = 'lentils'

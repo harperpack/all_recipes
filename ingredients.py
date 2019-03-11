@@ -33,6 +33,15 @@ class ingred:
         self.method = []
         self.old = None
         self.new = None
+    
+    def more(self, new):
+        if self.unit == new.unit:
+            self.quantity += new.quantity
+        else:
+            if self.unit == 'pound':
+                self.quantity += new.quantity / 16
+            elif self.unit == 'ounce':
+                self.quantity += new.quantity * 16
 
 def new_ingredient(name, q=None, u=None, p=None, d=None):
     new = ingred()

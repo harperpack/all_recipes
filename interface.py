@@ -89,20 +89,21 @@ def user_confirmation(choice, recipe):
             #print("Here's hoping that's just the right accoutrement!")
             return choice
     elif choice in ['+', '-']:
-        return user_servings(recipe.servings)
+        return user_servings(recipe)
     elif choice == 'dif':
         return user_cuisines()
     elif choice == 'add':
         return user_multiple_choice(recipe)
 
-def user_servings(servings):
-    print("The existing recipe calls for " + str(servings) + " servings.")
+def user_servings(recipe):
+    print("The existing recipe calls for " + str(recipe.servings) + " servings.")
     pref = input("How many servings would you like?  ")
     while not pref.isdigit() and pref != '0':
         print("We apologize; we cannot recognize your input.")
         print("Please use only positive, non-zero integers, e.g., 4 or 99")
         pref = input("How many servings would you like?  ")
-    scale = int(pref) / servings
+    scale = int(pref) / int(recipe.servings)
+    recipe.servings = int(pref)
     if scale >= 1:
         print("Got it.  We'll scale the recipe by " + str(int(scale)) + "x.")
     else:

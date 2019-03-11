@@ -34,14 +34,14 @@ def load_directions(soup):
     for i in results:
         if len(i.contents) > 0:
             for f in range(len(i.contents)):
-                print(f)
-                steps = i.contents[f].split(". ")
-                for step in steps:
-                    if "." in step:
-                        step = step.rstrip()
-                    else:
-                        step += "."
-                    r_list.append(step)
+                if i.contents[f]:
+                    steps = i.contents[f].split(". ")
+                    for step in steps:
+                        if "." in step:
+                            step = step.rstrip()
+                        else:
+                            step += "."
+                        r_list.append(step)
     return r_list
 
 # NEED TO MAKE USE OF INGREDIENT LIST TO BETTER CAPTURE INGREDIENTS IN DIRECTIONS
@@ -113,7 +113,7 @@ def make_direction(step, names):
                         name = tokens[j+3].text
                         item = new_ingredient(name, quantity, unit)
                         del tokens[j:j+4]
-                direction.ingredients.append(item)
+                    direction.ingredients.append(item)
             elif tokens[j+1] == 'of':
                 quantity = convert_to_float(tokens[j].text)
                 if tokens[j+2] == 'the':
