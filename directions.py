@@ -48,12 +48,12 @@ def load_directions(soup):
 
 def make_direction(step, names):
     cook_verbs = ['preheat', 'cook', 'broil', 'roast', 'drain', 'bake',
-              'rinse', 'melt', 'stir', 'mix', 'bake', 'simmer', 'season',
-              'sauté', 'poach', 'whisk', 'stew']
+                  'rinse', 'melt', 'stir', 'mix', 'bake', 'simmer', 'season',
+                  'sauté', 'poach', 'whisk', 'stew', 'grill']
     measure_words = ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch']
     time_words = ['second', 'minute', 'hour', 'seconds', 'minutes', 'hours']
     cook_nouns = ['oven', 'saucepan', 'pot', 'dish', 'cooker', 'bowl', 'pan',
-              'stove', 'cups']
+                  'stove', 'cups']
     cn_qualifiers = ['baking', 'mixing', 'slow']
     agglomerations = ['mixture', 'sauce', 'contents', 'marinade', 'mix', 'bowl']
     direction = Direction()

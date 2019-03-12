@@ -21,7 +21,7 @@ def launch_recipes():
     choice = user_options(recipe)
     transformation = user_confirmation(choice, recipe)
     recipe = route_transformations(transformation, recipe)
-    recipe.update_directions()
+    recipe.replace_directions()
     print("Here is the transformed recipe!\n")
     print_recipe(recipe)
 

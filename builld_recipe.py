@@ -32,16 +32,25 @@ class Recipe():
         self.directions = []
         self.transformations = []
     
-    def check_duplicates(self, potential_duplicate):
+    def check_duplicates(self, old, potential_duplicate):
+        sure_dup = None
         for ingredient in self.ingredients:
             if ingredient.name == potential_duplicate.name:
-                return ingredient
-        return None
+                sure_dup = ingredient
+        if sure_dup:
+            for ingredient in self.replaced:
+                if ingredient.name == old.name:
+                    return None
+            return sure_dup
+        else:
+            return None
     
     def swap(self, old, new):
         indx = self.ingredients.index(old)
-        self.ingredients[indx] = new
+        self.ingredients.pop(indx)
+        self.ingredients.insert(indx, new)
         self.replaced.append(old)
+        print("Swap happenned!")
     
     def identify_words_for_replacement(self, old, new):
         uniques = []
@@ -79,14 +88,19 @@ class Recipe():
             sub.old = old
             old.new = sub
         self.identify_words_for_replacement(old, sub)
-        check = self.check_duplicates(sub)
+        check = self.check_duplicates(old, sub)
         if check:
             # NEED TO MAKE FUNCTION
             check.more(sub)
+            print("Check happened")
         else:
             self.swap(old, sub)
     
-    def update_directions(self):
+    def add_directions(self, name):
+        new = new_ingredient(name)
+        new = create_metadata(new, self.servings)
+    
+    def replace_directions(self):
         if self.replaced:
             #names = [ingredient.name for ingredient in self.replaced]
             for direction in self.directions:
@@ -211,7 +225,7 @@ def print_recipe(recipe):
                 i = ingredient.preprocessing.index(step)
                 output += ' ' + step.strip()
                 if i < max_index:
-                    output += 'and'
+                    output += ' and'
         print(output)
         output = ''
     print("\n")
@@ -228,3 +242,32 @@ def print_ingredients(ingredients):
         print('Unit: ' + ingredient.unit)
         print('Descriptors: ' + str(ingredient.descriptors))
         print('Preprocessing: ' + str(ingredient.preprocessing))
+        print('Flags: ' + str(ingredient.flags))
+        print('Type: ' + str(ingredient.type))
+
+def create_metadata(ingredient, servings):
+    pass
+
+def count_cook_verbs(recipe):
+   cook_verbs = ['preheat', 'cook', 'broil', 'roast', 'drain', 'bake',
+                 'rinse', 'melt', 'stir', 'mix', 'bake', 'simmer', 'season',
+                 'sauté', 'poach', 'whisk', 'stew']
+   #dictionary of tuples that are the value and want to choose the higher int tuple
+   verb_count = {}
+   #want to find the a match in title and cook verbs
+   if any(verb in recipe.title.lower() for verb in cook_verbs):
+       for verb in cook_verbs:
+           if verb in recipe.title.lower():
+               return verb
+   else:
+       for direction in recipe.directions:
+           time = direction.duration
+           if direction.actions and direction.duration and direction.time_unit != 'subjective':
+               for action in direction.actions:
+                   if action not in verb_count.keys():
+                       verb_count[action] = time
+                   else:
+                       verb_count[action] += time
+
+                   collections.Counter(verb_count)
+   print(max(collections.Counter(verb_count), key=collections.Counter(verb_count).get))
