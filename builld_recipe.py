@@ -24,6 +24,16 @@ common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
                 'in', 'our', 'your']
 
 class Recipe():
+    def __init__(self):
+        self.title = ''
+        self.servings = 0
+        self.ingredients = []
+        self.replaced = []
+        self.primary = ''
+        self.meal = ''
+        self.directions = []
+        self.transformations = []
+
     def __init__(self, url):
         self.title = ''
         self.servings = 0
@@ -261,13 +271,18 @@ class Recipe():
 
         maxDuration = 0
         cookAction = 'unknown'
+        subj_time = .001
         for direction in self.directions:
-            if direction.actions and direction.duration and direction.time_unit != 'subjective':
-                newDuration = toMinute(direction.duration,direction.time_unit)
+            if direction.actions:
+                if direction.duration:
+                    newDuration = toMinute(direction.duration,direction.time_unit)
+                else:
+                    newDuration = subj_time
+                    subj_time = subj_time + .001
                 if newDuration > maxDuration:
                     for action in direction.actions:
-                        if action in cook_verbs:
-                            cookAction = action
+                        if action.lower() in cook_verbs:
+                            cookAction = action.lower()
                             maxDuration = newDuration
         self.main_cook = cookAction
         return
@@ -318,18 +333,3 @@ def get_servings(soup):
     results = soup.find('meta', id="metaRecipeServings")
     servings = results.get("content", '')
     return servings
-
-#url = 'https://www.allrecipes.com/recipe/8130/sour-cream-coffee-cake-iii/'
-#
-#url2 = 'https://www.allrecipes.com/recipe/8758/white-cheese-chicken-lasagna/'
-#
-#print(get_title(load_recipe(url2)))
-#print(get_servings(load_recipe(url2)))
-#dir_list = load_directions(load_recipe(url2))
-#for direction in dir_list:
-#    step = make_direction(direction)
-#    print(step.text)
-
-# NEED TO FIGURE OUT HOW TO GET PRIMARY AND MEAL
-
->>>>>>> fe62326ac2edafef14f4b797022a560e003c8b31
