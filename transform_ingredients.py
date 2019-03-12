@@ -138,9 +138,27 @@ def transform_ingredient_healthy(recipe, ingredient):
     return recipe, ingredient
 
 def transform_mexican(recipe):
+    mex_seasonings = 0
+    mex_veg_and_frt = 0
+    mex_others = 0
     for ingredient in recipe.ingredients:
         if 'un-mexican' in ingredient.flags:
             recipe, ingredient = transform_ingredient_mexican(recipe, ingredient)
+            ingredient.flags.append('mexican')
+        if 'mexican' in ingredient.flags:
+            if 'seasoning' in ingredient.type:
+                mex_seasonings += 1
+            elif ingredient.type == 'vegetable':
+                mex_veg_and_frt += 1
+            elif ingredient.type == 'fruit':
+                mex_veg_and_frt += 1
+            else:
+                mex_others += 1
+    if mex_seasonings + mex_veg_and_frt + mex_others < 5:
+        recipe.add_ingredient('avocado')
+        recipe.add_ingredient('chili powder')
+        recipe.add_ingredient('onion powder')
+        recipe.add_ingredient('garlic powder')
     return recipe
 
 def transform_ingredient_mexican(recipe, ingredient):
