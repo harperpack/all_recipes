@@ -6,7 +6,7 @@ Created on Sun Mar  3 14:07:04 2019
 @author: harper
 """
 
-from transform_ingredients import transform_vegetarian, transform_healthy, transform_mexican
+from transform_ingredients import transform_vegetarian, transform_healthy, transform_mexican, transform_eastasian
 
 #import math
 #import spacy
@@ -199,6 +199,10 @@ def route_transformations(selection, recipe):
                 recipe = transform_vegetarian(recipe)
             elif selection == 'vgn':
                 recipe = transform_vegetarian(recipe, vgn = True)
+            elif selection == 'mex':
+                recipe = transform_mexican(recipe)
+            elif selection == 'est':
+                recipe = transform_eastasian(recipe)
 #            elif selection == 'm':
 #                recipe = transform_meatier(recipe)
 #            elif selection == 'a':

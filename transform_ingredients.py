@@ -181,14 +181,88 @@ def transform_ingredient_mexican(recipe, ingredient):
     elif ingredient.type == 'dairy':
         recipe.replace_ingredient(ingredient, new_name='sour cream', old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'vegetable':
-        pass
+        if 'bell pepper' in ingredient.name:
+            recipe.add_ingredient('1.0 jalapeño pepper')
+            recipe.add_ingredient('habanero pepper')
     elif ingredient.type == 'fruit':
         recipe.replace_ingredient(ingredient, 'avocado')
+        if 'tomato' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name="tomatillo", old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'base':
         if 'powder' in ingredient.name:
             recipe.replace_ingredient(ingredient, new_name='cocoa powder', old_name=ingredient.name, deflag=unflag)
         else:
             recipe.replace_ingredient(ingredient, new_name='mole negro sauce', old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'condiment':
-        recipe.replace_ingredient(ingredient, new_name='tomatillo salsa', old_name=ingredient.name, deflag=unflag)
+        if 'marinara' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='enchilada sauce', old_name=ingredient.name, deflag=unflag)
+        else:
+            recipe.replace_ingredient(ingredient, new_name='tomatillo salsa', old_name=ingredient.name, deflag=unflag)
+    return recipe, ingredient
+
+def transform_eastasian(recipe):
+    est_seasonings = 0
+    est_veg_and_frt = 0
+    est_others = 0
+    for ingredient in recipe.ingredients:
+        if 'un-eastasian' in ingredient.flags:
+            recipe, ingredient = transform_ingredient_eastasian(recipe, ingredient)
+            ingredient.flags.append('eastasian')
+        if 'eastasian' in ingredient.flags:
+            if 'seasoning' in ingredient.type:
+                est_seasonings += 1
+            elif ingredient.type == 'vegetable':
+                est_veg_and_frt += 1
+            elif ingredient.type == 'fruit':
+                est_veg_and_frt += 1
+            else:
+                est_others += 1
+    if est_seasonings + est_veg_and_frt + est_others < 2:
+        recipe.add_ingredient('kimchi')
+        recipe.add_ingredient('chili powder')
+        recipe.add_ingredient('onion powder')
+        recipe.add_ingredient('garlic powder')
+    return recipe
+
+def transform_ingredient_eastasian(recipe, ingredient):
+    unflag = ['un-eastasian']
+    if 'seasoning' in ingredient.type:
+        if 'bitter' in ingredient.type:
+            recipe.replace_ingredient(ingredient, new_name='cardamom', old_name=ingredient.name, deflag=unflag)
+        elif 'sweet' in ingredient.type:
+            recipe.replace_ingredient(ingredient, new_name='cloves', old_name=ingredient.name, deflag=unflag)
+        elif 'savory' in ingredient.type:
+            recipe.replace_ingredient(ingredient, new_name='scallions', old_name=ingredient.name, deflag=unflag)
+            recipe.add_ingredient('1.0 egg')
+        elif 'spicy' in ingredient.type:
+            recipe.replace_ingredient(ingredient, new_name="wasabi", old_name=ingredient.name, deflag=unflag)
+        else:
+            recipe.replace_ingredient(ingredient, new_name='chinese five spice', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'red_meat':
+        recipe.replace_ingredient(ingredient, new_name='wagyu beef', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'pasta':
+        recipe.replace_ingredient(ingredient, new_name='rice noodle', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'carb':
+        recipe.replace_ingredient(ingredient, new_name='jasmine rice', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'vegetable':
+        if 'bell pepper' in ingredient.name:
+            recipe.add_ingredient('1.0 bok choy')
+            recipe.add_ingredient('1.0 green wild onions')
+        if 'lettuce' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='cabbage', old_name=ingredient.name, deflag=unflag)
+        else:
+            recipe.add_ingredient('1.0 green wild onions')
+            recipe.add_ingredient('1.0 lemongrass')
+    elif ingredient.type == 'base':
+        if 'powder' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='cinnamon powder', old_name=ingredient.name, deflag=unflag)
+        else:
+            recipe.replace_ingredient(ingredient, new_name='soy sauce', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'refined oils':
+        recipe.replace_ingredient(ingredient, new_name='sesame oil', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'condiment':
+        if 'marinara' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='jalapeño aioli', old_name=ingredient.name, deflag=unflag)
+        else:
+            recipe.replace_ingredient(ingredient, new_name='kimchi', old_name=ingredient.name, deflag=unflag)
     return recipe, ingredient
