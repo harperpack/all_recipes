@@ -14,9 +14,11 @@ from bs4 import BeautifulSoup
 import requests
 import spacy
 import collections
+from spacy.lang.en import English
+import en_core_web_sm
 
 common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
-                'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"', 
+                'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"',
                 ')', '(', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'all',
                 'stew', 'cubes', 'cube', 'roast', 'bouillon', 'can', 'bottle',
                 'in', 'our', 'your']
@@ -31,7 +33,7 @@ class Recipe():
         self.meal = ''
         self.directions = []
         self.transformations = []
-    
+
     def check_duplicates(self, old, potential_duplicate):
         sure_dup = None
         for ingredient in self.ingredients:
@@ -44,14 +46,14 @@ class Recipe():
             return sure_dup
         else:
             return None
-    
+
     def swap(self, old, new):
         indx = self.ingredients.index(old)
         self.ingredients.pop(indx)
         self.ingredients.insert(indx, new)
         self.replaced.append(old)
         print("Swap happenned!")
-    
+
     def identify_words_for_replacement(self, old, new):
         uniques = []
         if ' ' in old.name:
@@ -70,7 +72,7 @@ class Recipe():
             if old_words not in new_words:
                 uniques.append(old_words)
         old.specified = uniques
-    
+
     def replace_ingredient(self, old, new_name, old_name=None, deflag=None):
         # IF NOT OLD_NAME, IT'S A NEW INGREDIENT
         if not old_name:
@@ -95,11 +97,11 @@ class Recipe():
             print("Check happened")
         else:
             self.swap(old, sub)
-    
+
     def add_directions(self, name):
         new = new_ingredient(name)
         new = create_metadata(new, self.servings)
-    
+
     def replace_directions(self):
         if self.replaced:
             #names = [ingredient.name for ingredient in self.replaced]
@@ -242,32 +244,32 @@ def print_ingredients(ingredients):
         print('Unit: ' + ingredient.unit)
         print('Descriptors: ' + str(ingredient.descriptors))
         print('Preprocessing: ' + str(ingredient.preprocessing))
-        print('Flags: ' + str(ingredient.flags))
-        print('Type: ' + str(ingredient.type))
 
-def create_metadata(ingredient, servings):
-    pass
+def get_main_cook(recipe):
+    cook_verbs = ['bake','shir','boil','fried','saut','grill','roast','baste','blanch','poach','scald','simmer','steam','stew','temper','caramelize']
 
-def count_cook_verbs(recipe):
-   cook_verbs = ['preheat', 'cook', 'broil', 'roast', 'drain', 'bake',
-                 'rinse', 'melt', 'stir', 'mix', 'bake', 'simmer', 'season',
-                 'sauté', 'poach', 'whisk', 'stew']
-   #dictionary of tuples that are the value and want to choose the higher int tuple
-   verb_count = {}
-   #want to find the a match in title and cook verbs
-   if any(verb in recipe.title.lower() for verb in cook_verbs):
-       for verb in cook_verbs:
-           if verb in recipe.title.lower():
-               return verb
-   else:
-       for direction in recipe.directions:
-           time = direction.duration
-           if direction.actions and direction.duration and direction.time_unit != 'subjective':
-               for action in direction.actions:
-                   if action not in verb_count.keys():
-                       verb_count[action] = time
-                   else:
-                       verb_count[action] += time
+    #want to find the a match in title and cook verbs
+    for i in cook_verbs:
+        if recipe.title.lower().find(i) != -1:
+            return i
 
-                   collections.Counter(verb_count)
-   print(max(collections.Counter(verb_count), key=collections.Counter(verb_count).get))
+    maxDuration = 0
+    cookAction = 'unknown'
+    for direction in recipe.directions:
+        if direction.actions and direction.duration and direction.time_unit != 'subjective':
+            newDuration = toMinute(direction.duration,direction.time_unit)
+            if newDuration > maxDuration:
+                for action in direction.actions:
+                    if action in cook_verbs:
+                        cookAction = action
+                        maxDuration = newDuration
+    return cookAction
+
+def toMinute(q,u):
+    if u.lower()[0:6]=='minute':
+        return q[1]
+    elif u.lower()[0:4]=='hour':
+        return q[1] * 60
+    elif u.lower()[0:6]=='second':
+        return q[1] / 60
+    return 0
