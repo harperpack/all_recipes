@@ -52,7 +52,6 @@ class Recipe():
         self.ingredients.pop(indx)
         self.ingredients.insert(indx, new)
         self.replaced.append(old)
-        print("Swap happenned!")
 
     def identify_words_for_replacement(self, old, new):
         uniques = []
@@ -94,13 +93,55 @@ class Recipe():
         if check:
             # NEED TO MAKE FUNCTION
             check.more(sub)
-            print("Check happened")
         else:
             self.swap(old, sub)
 
-    def add_directions(self, name):
+    def add_ingredient(self, name):
         new = new_ingredient(name)
-        new = create_metadata(new, self.servings)
+        new = categorize_ingredient(new)
+        self.set_quantity(new)
+        self.ingredients.append(new)
+        #similars = self.find_similar(new)
+
+    def set_quantity(self, ingredient):
+        if 'seasoning' in ingredient.type:
+            ingredient.quantity = float(int(self.servings) / 3)
+            ingredient.unit = 'teaspoon'
+        elif 'bean' in ingredient.name:
+            ingredient.quantity = float(int(self.servings) / 4)
+            ingredient.unit = '(15 ounce) cans'
+            ingredient.preprocessing = ['drained', 'rinsed']
+        elif 'lentil' in ingredient.name:
+            ingredient.quantity = float(int(self.servings) / 4)
+            ingredient.unit = 'cup'
+            ingredient.descriptors = ['dry']
+            ingredient.preprocessing['soaked overnight']
+        elif 'avocado' in ingredient.name:
+            ingredient.quantity = float(int(self.servings) / 2)
+            ingredient.unit = 'discrete'
+            ingredient.descriptors = ['fresh']
+            ingredient.preprocessing = ['peeled', 'pitted', 'diced']
+        elif 'spinach' in ingredient.name:
+            ingredient.quantity = float(int(self.servings)) * 2
+            ingredient.unit = 'ounce'
+            ingredient.descriptors = ['fresh']
+            ingredient.preprocessing = ['rinsed', 'dried', 'torn into bite-size pieces']
+            ingredient.type = 'vegetable'
+        elif ingredient.type == 'vegetable':
+            ingredient.quantity = float(int(self.servings) / 4)
+            ingredient.unit = 'cup'
+            ingredient.descriptors = ['fresh']
+            ingredient.preprocessing = ['washed', 'diced']
+
+    def add_to_directions(self, ingredient):
+        tag = ingredient.type
+        names = [ingredient.name for ingredient in self.ingredients if ingredient.type == tag]
+        for direction in self.directions:
+            if any(name in direction.text for name in names):
+                for name in names:
+                    if name in direction.text:
+                        direction.text = direction.text.replace(name, ingredient.name + ' and ' + name)
+                        break
 
     def replace_directions(self):
         if self.replaced:
@@ -236,6 +277,10 @@ def print_recipe(recipe):
     for direction in recipe.directions:
         print("   " + str(step_no) + "] " + direction.text)
         step_no += 1
+    print('------------------------------------')
+    print("And here is our representation, partly:")
+    print("Primary cooking method: " + str(recipe.primary))
+    print_ingredients(recipe.ingredients)
 
 def print_ingredients(ingredients):
     for ingredient in ingredients:
@@ -244,6 +289,7 @@ def print_ingredients(ingredients):
         print('Unit: ' + ingredient.unit)
         print('Descriptors: ' + str(ingredient.descriptors))
         print('Preprocessing: ' + str(ingredient.preprocessing))
+        print('Alternative: ' + str(ingredient.alternative))
 
 def get_main_cook(recipe):
     cook_verbs = ['bake','shir','boil','fried','saut','grill','roast','baste','blanch','poach','scald','simmer','steam','stew','temper','caramelize']

@@ -142,7 +142,8 @@ general_seasonings = ['black pepper', 'salt', 'allspice', 'basil', 'cinnamon',
                       'paprika', 'parsley', 'safflower', 'sassafras', 'tarragon',
                       'vanilla', 'saffron', 'sage', 'lemongrass', 'sea salt',
                       'cinnamon bark', 'ground cinnamon', 'clove', 'bay',
-                      'nutmeg', 'thyme', 'coriander', 'chamomile', 'peppercorn']
+                      'nutmeg', 'thyme', 'coriander', 'chamomile', 'peppercorn',
+                      'tamari sauce', 'tamari', ]
 
 mex_seasonings = ['cayenne', 'cayenne powder']
 
@@ -163,7 +164,7 @@ tiny_measures = ['teaspoon','tablespoon','pinch', 'taste', 'soupçon', 'soupcon'
 
 spicy_seasonings = ['cayenne', 'chile', 'peppercorn', 'horseradish', 'pepper oil',
                     'red pepper', 'curry powder', 'wasabi', 'chili oil', 
-                    'chili powder', ]
+                    'chili powder']
 
 seasonings = general_seasonings + non_mex_seasonings + spicy_seasonings
 
