@@ -20,8 +20,8 @@ def launch_recipes():
 #    print_recipe(recipe)
     choice = user_options(r)
     transformation = user_confirmation(choice, r)
-    recipe = route_transformations(transformation, r)
-    recipe.update_directions()
+    r = route_transformations(transformation, r)
+    r.update_directions()
     print("Here is the transformed recipe!\n")
     r.print_recipe()
 

@@ -14,7 +14,15 @@ mushrooms = ['enoki', 'enoki mushrooms', 'shiitake mushrooms', 'portobello mushr
              'chanterelle', 'button mushrooms', 'white button mushrooms', 'truffles',
              'porcini mushrooms', 'king oyster mushrooms']
 
-non_mex_veg = ['asparagus']
+non_mex_veg = ['asparagus', 'beet', 'bamboo shoots', 'bean sprouts', 'endive',
+               'broccoli', 'sprouts', 'brussel sprouts', 'brussels sprouts',
+               'celery', 'red cabbage', 'coconut', 'olive',
+               'pear', 'bamboo shoot', 'bean sprout', 'grape', 'shallot', 'yam',
+               'fennel', 'celeric']
+
+non_mex_cruc = ['artichoke', 'celery', 'asparagus', ]
+
+non_mex_starch = ['water chestnut', 'celeric', 'taro', 'yam', '']
 
 veg = ['artichoke', 'asparagus', 'beet', 'bamboo shoots', 'bean sprouts', 'endive',
        'bell pepper', 'broccoli', 'sprouts', 'brussel sprouts', 'brussels sprouts',

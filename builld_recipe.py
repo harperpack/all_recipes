@@ -18,7 +18,7 @@ from spacy.lang.en import English
 import en_core_web_sm
 
 common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
-                'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"', 
+                'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"',
                 ')', '(', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'all',
                 'stew', 'cubes', 'cube', 'roast', 'bouillon', 'can', 'bottle',
                 'in', 'our', 'your']
@@ -128,17 +128,26 @@ class Recipe():
             print('Descriptors: ' + str(ingredient.descriptors))
             print('Preprocessing: ' + str(ingredient.preprocessing))
     
-    def check_duplicates(self, potential_duplicate):
+    def check_duplicates(self, old, potential_duplicate):
+        sure_dup = None
         for ingredient in self.ingredients:
             if ingredient.name == potential_duplicate.name:
-                return ingredient
-        return None
-    
+                sure_dup = ingredient
+        if sure_dup:
+            for ingredient in self.replaced:
+                if ingredient.name == old.name:
+                    return None
+            return sure_dup
+        else:
+            return None
+
     def swap(self, old, new):
         indx = self.ingredients.index(old)
-        self.ingredients[indx] = new
+        self.ingredients.pop(indx)
+        self.ingredients.insert(indx, new)
         self.replaced.append(old)
-    
+        print("Swap happenned!")
+
     def identify_words_for_replacement(self, old, new):
         uniques = []
         if ' ' in old.name:
@@ -157,7 +166,7 @@ class Recipe():
             if old_words not in new_words:
                 uniques.append(old_words)
         old.specified = uniques
-    
+
     def replace_ingredient(self, old, new_name, old_name=None, deflag=None):
         # IF NOT OLD_NAME, IT'S A NEW INGREDIENT
         if not old_name:
@@ -175,14 +184,19 @@ class Recipe():
             sub.old = old
             old.new = sub
         self.identify_words_for_replacement(old, sub)
-        check = self.check_duplicates(sub)
+        check = self.check_duplicates(old, sub)
         if check:
             # NEED TO MAKE FUNCTION
             check.more(sub)
+            print("Check happened")
         else:
             self.swap(old, sub)
-    
-    def update_directions(self):
+
+    def add_directions(self, name):
+        new = new_ingredient(name)
+        new = create_metadata(new, self.servings)
+
+    def replace_directions(self):
         if self.replaced:
             #names = [ingredient.name for ingredient in self.replaced]
             for direction in self.directions:
@@ -271,7 +285,118 @@ def get_servings(soup):
 #    print(step.text)
 
 # NEED TO FIGURE OUT HOW TO GET PRIMARY AND MEAL
+<<<<<<< HEAD
+=======
+def make_recipe(url):
+    # instantiate the recipe object
+    recipe = Recipe()
+    # load the html from All Recipes
+    html = load_recipe(url)
+    # obtain recipe title
+    recipe.title = get_title(html)
+#    print(recipe.title)
+    # obtain recipe serving size
+    recipe.servings = get_servings(html)
+#    print(recipe.servings)
+    # load ingrediets
+    ingredients = load_ingredients(html)
+    for item in ingredients:
+        # instatiate each ingredient as ingredient object
+        ingredient = make_ingredient(item)
+        if ingredient:
+#            print(ingredient.name)
+            # NEED TO DEFINE CATEGORIZE INGREDIENT
+            ingredient = categorize_ingredient(ingredient)
+#            print(ingredient.type)
+            # add ingredient to recipe
+            recipe.ingredients.append(ingredient)
+    # load directions
+    directions = load_directions(html)
+    # build list of ingredient names to aid in parsing directions
+    names = [ingredient.name for ingredient in recipe.ingredients]
+    for step in directions:
+        # instantiate each direction as direction object
+        direction = make_direction(step, names)
+        if direction:
+            # add direction to recipe
+            recipe.directions.append(direction)
+    return recipe
+
+def print_recipe(recipe):
+    if recipe.transformations:
+        title = recipe.transformations[0]
+        max_index = len(recipe.transformations) - 1
+        if max_index > 0:
+            for i in range(1, len(recipe.transformations)):
+                title += ', ' + recipe.transformations[i]
+        title += ' ' + recipe.title
+        print(title)
+    else:
+        print(recipe.title)
+    print("Serves " + str(recipe.servings))
+    print('------------------------------------')
+    print("INGREDIENTS:")
+#    print_ingredients(recipe.ingredients)
+    for ingredient in recipe.ingredients:
+        if ingredient.unit.strip() in ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch']:
+            output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.unit.strip()
+        else:
+            if ingredient.unit == 'discrete':
+                output = "   " + str(ingredient.quantity).strip()
+            else:
+                output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.name.strip()
+        if ingredient.descriptors:
+            output += ' ' + ingredient.descriptors[0].strip()
+            max_index = len(ingredient.descriptors) - 1
+            if max_index > 0:
+                output += ','
+                for i in range(1, len(ingredient.descriptors)):
+                    output += ' ' + ingredient.descriptors[i].strip()
+                    if i < max_index:
+                        output += ','
+        if ingredient.name not in output:
+            output += ' ' + ingredient.name.strip()
+        if ingredient.preprocessing:
+            output += ','
+            max_index = len(ingredient.preprocessing) - 1
+            for step in ingredient.preprocessing:
+                i = ingredient.preprocessing.index(step)
+                output += ' ' + step.strip()
+                if i < max_index:
+                    output += ' and'
+        print(output)
+        output = ''
+    print("\n")
+    print("DIRECTIONS:")
+    step_no = 1
+    for direction in recipe.directions:
+        print("   " + str(step_no) + "] " + direction.text)
+        step_no += 1
+>>>>>>> refs/remotes/origin/master
 
 
 
 
+<<<<<<< HEAD
+=======
+    maxDuration = 0
+    cookAction = 'unknown'
+    for direction in recipe.directions:
+        if direction.actions and direction.duration and direction.time_unit != 'subjective':
+            newDuration = toMinute(direction.duration,direction.time_unit)
+            if newDuration > maxDuration:
+                for action in direction.actions:
+                    if action in cook_verbs:
+                        cookAction = action
+                        maxDuration = newDuration
+    return cookAction
+
+def toMinute(q,u):
+    if u.lower()[0:6]=='minute':
+        return q[1]
+    elif u.lower()[0:4]=='hour':
+        return q[1] * 60
+    elif u.lower()[0:6]=='second':
+        return q[1] / 60
+    return 0
+>>>>>>> refs/remotes/origin/master

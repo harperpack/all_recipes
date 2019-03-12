@@ -199,8 +199,8 @@ def route_transformations(selection, recipe):
                 recipe = transform_vegetarian(recipe)
             elif selection == 'vgn':
                 recipe = transform_vegetarian(recipe, vgn = True)
-#            elif selection == 'm':
-#                recipe = transform_meatier(recipe)
+            elif selection == 'mex':
+                recipe = transform_mexican(recipe)
 #            elif selection == 'a':
 #                recipe = transform_cost(recipe)
 #            elif selection == 'e':
