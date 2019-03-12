@@ -24,6 +24,16 @@ common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
                 'in', 'our', 'your']
 
 class Recipe():
+    def __init__(self):
+        self.title = ''
+        self.servings = 0
+        self.ingredients = []
+        self.replaced = []
+        self.primary = ''
+        self.meal = ''
+        self.directions = []
+        self.transformations = []
+
     def __init__(self, url):
         self.title = ''
         self.servings = 0
@@ -215,13 +225,18 @@ class Recipe():
 
         maxDuration = 0
         cookAction = 'unknown'
+        subj_time = .001
         for direction in self.directions:
-            if direction.actions and direction.duration and direction.time_unit != 'subjective':
-                newDuration = toMinute(direction.duration,direction.time_unit)
+            if direction.actions:
+                if direction.duration:
+                    newDuration = toMinute(direction.duration,direction.time_unit)
+                else:
+                    newDuration = subj_time
+                    subj_time = subj_time + .001
                 if newDuration > maxDuration:
                     for action in direction.actions:
-                        if action in cook_verbs:
-                            cookAction = action
+                        if action.lower() in cook_verbs:
+                            cookAction = action.lower()
                             maxDuration = newDuration
         self.main_cook = cookAction
         return
@@ -272,131 +287,3 @@ def get_servings(soup):
     results = soup.find('meta', id="metaRecipeServings")
     servings = results.get("content", '')
     return servings
-
-#url = 'https://www.allrecipes.com/recipe/8130/sour-cream-coffee-cake-iii/'
-#
-#url2 = 'https://www.allrecipes.com/recipe/8758/white-cheese-chicken-lasagna/'
-#
-#print(get_title(load_recipe(url2)))
-#print(get_servings(load_recipe(url2)))
-#dir_list = load_directions(load_recipe(url2))
-#for direction in dir_list:
-#    step = make_direction(direction)
-#    print(step.text)
-
-# NEED TO FIGURE OUT HOW TO GET PRIMARY AND MEAL
-<<<<<<< HEAD
-=======
-def make_recipe(url):
-    # instantiate the recipe object
-    recipe = Recipe()
-    # load the html from All Recipes
-    html = load_recipe(url)
-    # obtain recipe title
-    recipe.title = get_title(html)
-#    print(recipe.title)
-    # obtain recipe serving size
-    recipe.servings = get_servings(html)
-#    print(recipe.servings)
-    # load ingrediets
-    ingredients = load_ingredients(html)
-    for item in ingredients:
-        # instatiate each ingredient as ingredient object
-        ingredient = make_ingredient(item)
-        if ingredient:
-#            print(ingredient.name)
-            # NEED TO DEFINE CATEGORIZE INGREDIENT
-            ingredient = categorize_ingredient(ingredient)
-#            print(ingredient.type)
-            # add ingredient to recipe
-            recipe.ingredients.append(ingredient)
-    # load directions
-    directions = load_directions(html)
-    # build list of ingredient names to aid in parsing directions
-    names = [ingredient.name for ingredient in recipe.ingredients]
-    for step in directions:
-        # instantiate each direction as direction object
-        direction = make_direction(step, names)
-        if direction:
-            # add direction to recipe
-            recipe.directions.append(direction)
-    return recipe
-
-def print_recipe(recipe):
-    if recipe.transformations:
-        title = recipe.transformations[0]
-        max_index = len(recipe.transformations) - 1
-        if max_index > 0:
-            for i in range(1, len(recipe.transformations)):
-                title += ', ' + recipe.transformations[i]
-        title += ' ' + recipe.title
-        print(title)
-    else:
-        print(recipe.title)
-    print("Serves " + str(recipe.servings))
-    print('------------------------------------')
-    print("INGREDIENTS:")
-#    print_ingredients(recipe.ingredients)
-    for ingredient in recipe.ingredients:
-        if ingredient.unit.strip() in ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch']:
-            output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.unit.strip()
-        else:
-            if ingredient.unit == 'discrete':
-                output = "   " + str(ingredient.quantity).strip()
-            else:
-                output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.name.strip()
-        if ingredient.descriptors:
-            output += ' ' + ingredient.descriptors[0].strip()
-            max_index = len(ingredient.descriptors) - 1
-            if max_index > 0:
-                output += ','
-                for i in range(1, len(ingredient.descriptors)):
-                    output += ' ' + ingredient.descriptors[i].strip()
-                    if i < max_index:
-                        output += ','
-        if ingredient.name not in output:
-            output += ' ' + ingredient.name.strip()
-        if ingredient.preprocessing:
-            output += ','
-            max_index = len(ingredient.preprocessing) - 1
-            for step in ingredient.preprocessing:
-                i = ingredient.preprocessing.index(step)
-                output += ' ' + step.strip()
-                if i < max_index:
-                    output += ' and'
-        print(output)
-        output = ''
-    print("\n")
-    print("DIRECTIONS:")
-    step_no = 1
-    for direction in recipe.directions:
-        print("   " + str(step_no) + "] " + direction.text)
-        step_no += 1
->>>>>>> refs/remotes/origin/master
-
-
-
-
-<<<<<<< HEAD
-=======
-    maxDuration = 0
-    cookAction = 'unknown'
-    for direction in recipe.directions:
-        if direction.actions and direction.duration and direction.time_unit != 'subjective':
-            newDuration = toMinute(direction.duration,direction.time_unit)
-            if newDuration > maxDuration:
-                for action in direction.actions:
-                    if action in cook_verbs:
-                        cookAction = action
-                        maxDuration = newDuration
-    return cookAction
-
-def toMinute(q,u):
-    if u.lower()[0:6]=='minute':
-        return q[1]
-    elif u.lower()[0:4]=='hour':
-        return q[1] * 60
-    elif u.lower()[0:6]=='second':
-        return q[1] / 60
-    return 0
->>>>>>> refs/remotes/origin/master
