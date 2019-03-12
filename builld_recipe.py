@@ -14,6 +14,8 @@ from bs4 import BeautifulSoup
 import requests
 import spacy
 import collections
+from spacy.lang.en import English
+import en_core_web_sm
 
 common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
                 'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"', 
@@ -228,3 +230,32 @@ def print_ingredients(ingredients):
         print('Unit: ' + ingredient.unit)
         print('Descriptors: ' + str(ingredient.descriptors))
         print('Preprocessing: ' + str(ingredient.preprocessing))
+
+def get_main_cook(recipe):
+    cook_verbs = ['bake','shir','boil','fried','saut','grill','roast','baste','blanch','poach','scald','simmer','steam','stew','temper','caramelize']
+
+    #want to find the a match in title and cook verbs
+    for i in cook_verbs:
+        if recipe.title.lower().find(i) != -1:
+            return i
+
+    maxDuration = 0
+    cookAction = 'unknown'
+    for direction in recipe.directions:
+        if direction.actions and direction.duration and direction.time_unit != 'subjective':
+            newDuration = toMinute(direction.duration,direction.time_unit)
+            if newDuration > maxDuration:
+                for action in direction.actions:
+                    if action in cook_verbs:
+                        cookAction = action
+                        maxDuration = newDuration
+    return cookAction
+                    
+def toMinute(q,u):
+    if u.lower()[0:6]=='minute':
+        return q[1]
+    elif u.lower()[0:4]=='hour':
+        return q[1] * 60
+    elif u.lower()[0:6]=='second':
+        return q[1] / 60
+    return 0

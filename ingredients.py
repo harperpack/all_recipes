@@ -172,7 +172,7 @@ def make_ingredient(i):
             while tokens[end_paren_ix].text != ')':
                 end_paren_ix += 1
             info_struct.unit = "".join(j.text+' ' for j in tokens[0:end_paren_ix+1] if j.pos_ != 'PUNCT').strip()
-            if tokens[end_paren_ix+1] in measure_words:
+            if tokens[end_paren_ix+1].text in measure_words:
                 info_struct.unit = info_struct.unit.join(' ' + tokens[end_paren_ix+1])
                 del tokens[0:end_paren_ix+2]
             else:
