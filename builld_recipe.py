@@ -17,8 +17,9 @@ import collections
 
 common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
                 'than', 'to', 'them', 'it', 'into', ',', '.', '-', "'", '"', 
-                ')', '(', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-                'stew', 'cubes', 'cube', 'roast', 'bouillon', 'can', 'bottle']
+                ')', '(', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'all',
+                'stew', 'cubes', 'cube', 'roast', 'bouillon', 'can', 'bottle',
+                'in', 'our', 'your']
 
 class Recipe():
     def __init__(self):
@@ -151,10 +152,10 @@ def make_recipe(url):
         # instatiate each ingredient as ingredient object
         ingredient = make_ingredient(item)
         if ingredient:
-            print(ingredient.name)
+#            print(ingredient.name)
             # NEED TO DEFINE CATEGORIZE INGREDIENT
             ingredient = categorize_ingredient(ingredient)
-            print(ingredient.type)
+#            print(ingredient.type)
             # add ingredient to recipe
             recipe.ingredients.append(ingredient)
     # load directions
@@ -170,7 +171,6 @@ def make_recipe(url):
     return recipe
 
 def print_recipe(recipe):
-    unusual = False
     if recipe.transformations:
         title = recipe.transformations[0]
         max_index = len(recipe.transformations) - 1
@@ -184,39 +184,47 @@ def print_recipe(recipe):
     print("Serves " + str(recipe.servings))
     print('------------------------------------')
     print("INGREDIENTS:")
+#    print_ingredients(recipe.ingredients)
     for ingredient in recipe.ingredients:
-        if ingredient.unit in ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch']:
+        if ingredient.unit.strip() in ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch']:
             output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.unit.strip()
         else:
             if ingredient.unit == 'discrete':
                 output = "   " + str(ingredient.quantity).strip()
             else:
-                print("Stahp")
                 output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.name.strip()
-                unusual = True
         if ingredient.descriptors:
-            output = ' ' + ingredient.descriptors[0]
+            output += ' ' + ingredient.descriptors[0].strip()
             max_index = len(ingredient.descriptors) - 1
             if max_index > 0:
                 output += ','
                 for i in range(1, len(ingredient.descriptors)):
-                    output += ' ' + ingredient.descriptors[i]
+                    output += ' ' + ingredient.descriptors[i].strip()
                     if i < max_index:
                         output += ','
-        if not unusual:
+        if ingredient.name not in output:
             output += ' ' + ingredient.name.strip()
         if ingredient.preprocessing:
             output += ','
             max_index = len(ingredient.preprocessing) - 1
             for step in ingredient.preprocessing:
                 i = ingredient.preprocessing.index(step)
-                output += ' ' + step
+                output += ' ' + step.strip()
                 if i < max_index:
                     output += 'and'
         print(output)
+        output = ''
     print("\n")
     print("DIRECTIONS:")
     step_no = 1
     for direction in recipe.directions:
         print("   " + str(step_no) + "] " + direction.text)
         step_no += 1
+
+def print_ingredients(ingredients):
+    for ingredient in ingredients:
+        print('Name:' + ingredient.name)
+        print('Quantity:' + str(ingredient.quantity))
+        print('Unit: ' + ingredient.unit)
+        print('Descriptors: ' + str(ingredient.descriptors))
+        print('Preprocessing: ' + str(ingredient.preprocessing))

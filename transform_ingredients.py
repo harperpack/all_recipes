@@ -140,5 +140,37 @@ def transform_ingredient_healthy(recipe, ingredient):
 def transform_mexican(recipe):
     for ingredient in recipe.ingredients:
         if 'un-mexican' in ingredient.flags:
-            recipe, ingredient = transform_ingredient_vegetarian(recipe, ingredient)
+            recipe, ingredient = transform_ingredient_mexican(recipe, ingredient)
     return recipe
+
+def transform_ingredient_mexican(recipe, ingredient):
+    unflag = ['un-mexican']
+    if 'seasoning' in ingredient.type:
+        if 'bitter' in ingredient.type:
+            recipe.replace_ingredient(ingredient, new_name='azafran', old_name=ingredient.name, deflag=unflag)
+        elif 'sweet' in ingredient.type:
+            recipe.replace_ingredient(ingredient, new_name='allspice', old_name=ingredient.name, deflag=unflag)
+        elif 'savory' in ingredient.type:
+            recipe.replace_ingredient(ingredient, new_name='oregano', old_name=ingredient.name, deflag=unflag)
+        else:
+            recipe.replace_ingredient(ingredient, new_name='cayenne pepper', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'pasta':
+        recipe.replace_ingredient(ingredient, new_name='fideo noodle', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'carb':
+        recipe.replace_ingredient(ingredient, new_name='red rice', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'cheese':
+        recipe.replace_ingredient(ingredient, new_name='cotija cheese', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'dairy':
+        recipe.replace_ingredient(ingredient, new_name='sour cream', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'vegetable':
+        pass
+    elif ingredient.type == 'fruit':
+        recipe.replace_ingredient(ingredient, 'avocado')
+    elif ingredient.type == 'base':
+        if 'powder' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='cocoa powder', old_name=ingredient.name, deflag=unflag)
+        else:
+            recipe.replace_ingredient(ingredient, new_name='mole negro sauce', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'condiment':
+        recipe.replace_ingredient(ingredient, new_name='tomatillo salsa', old_name=ingredient.name, deflag=unflag)
+    return recipe, ingredient

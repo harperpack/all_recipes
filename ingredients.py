@@ -115,6 +115,11 @@ def rationalize_details(new, servings):
                 q = 1.6 * new.old.quantity
                 new.quantity = q * 0.75
                 new.unit = 'tablespoon'
+    elif 'avocado' in new.name:
+        new.quantity = float(0.5 * int(servings))
+        new.unit = 'discrete'
+        new.preprocessing = ['peeled', 'pitted', 'diced']
+        new.descriptors = ['fresh']
     return new
 
 def is_bad(tok):

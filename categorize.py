@@ -14,6 +14,8 @@ mushrooms = ['enoki', 'enoki mushrooms', 'shiitake mushrooms', 'portobello mushr
              'chanterelle', 'button mushrooms', 'white button mushrooms', 'truffles',
              'porcini mushrooms', 'king oyster mushrooms']
 
+non_mex_veg = ['asparagus']
+
 veg = ['artichoke', 'asparagus', 'beet', 'bamboo shoots', 'bean sprouts', 'endive',
        'bell pepper', 'broccoli', 'sprouts', 'brussel sprouts', 'brussels sprouts',
        'cabbage', 'carrot', 'cassava', 'cauliflower', 'celery', 'corn', 'cucumber',
@@ -32,14 +34,18 @@ fruit = ['apple', 'blueberry', 'strawberry', 'blueberries', 'strawberries', 'che
          'plum', 'persimmon', 'quince', 'rhubarb', 'starfruit', 'canteloupe',
          'cranberry']
 
-mex_veg = ['jicama', 'tomatillo']
+mex_veg = ['jicama', 'tomatillo', 'squash', 'corn', 'potato', 'potatoes', 
+           'pepper', 'tomato']
 
-mex_fruit = ['avocado', 'tamarind', 'prickly pear', 'plantain']
+mex_fruit = ['avocado', 'tamarind', 'prickly pear', 'plantain', 'mango', 
+             'papaya']
 
 spicy_vegetables = ['guajillo', 'habanero', 'jalapeño', 'scotch bonnet', 'chili',
                     'savina', 'tabasco', 'serrano', 'peperoncino', 'chipotle']
 
-vegetables = greens + veg + mex_veg + spicy_vegetables + mushrooms
+mex_vegetables = mex_veg + spicy_vegetables
+
+vegetables = greens + veg + mex_vegetables + mushrooms
 
 fruits = fruit + mex_fruit
 
@@ -127,15 +133,18 @@ general_seasonings = ['black pepper', 'salt', 'allspice', 'basil', 'cinnamon',
                       'lemon', 'oregano', 'cumin', 'garlic powder', 'onion powder',
                       'paprika', 'parsley', 'safflower', 'sassafras', 'tarragon',
                       'vanilla', 'saffron', 'sage', 'lemongrass', 'sea salt',
-                      'cinnamon bark', 'ground cinnamon', 'clove']
+                      'cinnamon bark', 'ground cinnamon', 'clove', 'bay',
+                      'nutmeg', 'thyme', 'coriander', 'chamomile', 'peppercorn']
+
+mex_seasonings = ['cayenne', 'cayenne powder']
 
 non_mex_bitter = ['dill', 'anise', 'star anise', 'fennel', 'fenugreek', 'licorice',
                   'turmeric']
 
-non_mex_sweet = ['coriander', 'asafoetida', 'mint', 'peppermint', 'nutmeg']
+non_mex_sweet = ['asafoetida', 'mint', 'peppermint']
 
 non_mex_savory = ['caper', 'rosemary', 'ginger', 'chives', 'galangal', 
-                  'thyme', 'chimichurri', 'marjoram', 'lavender']
+                  'chimichurri', 'marjoram', 'lavender']
 
 non_mex_spicy = ['cardamom', 'cardamon', 'mustard', 'curry', 'horseradish']
 
@@ -145,7 +154,8 @@ tiny_measures = ['teaspoon','tablespoon','pinch', 'taste', 'soupçon', 'soupcon'
                  'tsp', 'tbsp', 'sprig', 'inch', 'leaf', 'clove']
 
 spicy_seasonings = ['cayenne', 'chile', 'peppercorn', 'horseradish', 'pepper oil',
-                    'red pepper', 'curry powder', 'wasabi', 'chili oil']
+                    'red pepper', 'curry powder', 'wasabi', 'chili oil', 
+                    'chili powder', ]
 
 seasonings = general_seasonings + non_mex_seasonings + spicy_seasonings
 
@@ -158,15 +168,17 @@ base_ingreds = ['gravy', 'barbecue sauce', 'lemon juice', 'lime juice',
                 'coconut oil', 'palm oil', 'rapeseed oil', 'truffle oil',
                 'shortening', 'almond extract', 'rum flavoring', 'brandy flavoring',
                 'liquid smoke', 'cocoa powder', 'rolled oats', 'jam', 'preserve',
-                'food coloring', 'jelly', 'agar agar']
+                'food coloring', 'jelly', 'agar agar', 'panko bread crumbs']
 
-non_mex_bases = ['mustard', 'catsup', 'ketchup', 'mayonnaise', 'ranch',
-                 'thousand island dressing', 'russian dressing', 'bernaisse',
-                 'ranch dressing', 'french dressing', 'duck sauce',
-                 'hollandaise', 'mint extract', 'peanut butter',
-                 'almond butter', 'matcha powder', 'panko bread crumbs']
+non_mex_condiments = ['mustard', 'catsup', 'ketchup', 'mayonnaise', 'ranch',
+                      'thousand island dressing', 'russian dressing', 'bernaisse',
+                      'ranch dressing', 'french dressing', 'duck sauce', 'hollandaise']
 
-mex_base = ['corn starch', 'corn flour', 'guacamole']
+non_mex_misc = ['mint extract', 'peanut butter', 'almond butter', 'matcha powder']
+
+non_mex_bases = non_mex_condiments + non_mex_misc
+
+mex_base = ['corn starch', 'corn flour', 'guacamole', 'masa']
 
 refined_flours = ['white flour', 'all purpose flour', 'all-purpose flour']
 
@@ -231,7 +243,8 @@ class ingred:
         self.method = []
 
 def in_other(name, category):
-    all_types = meat + seasonings + bases + grains + dairy + fruits_and_vegetables
+    all_types = []
+    meat + seasonings + bases + grains + dairy + fruits_and_vegetables
     all_types -= category
     if name in all_types:
         return True
@@ -274,6 +287,16 @@ def categorize_seasoning(ingredient):
         ingredient.flags.append('spicy')
     if any(item in name for item in non_mex_seasonings):
         ingredient.flags.append('un-mexican')
+        if any(item in name for item in non_mex_bitter):
+            ingredient.type = 'bitter seasoning'
+        elif any(item in name for item in non_mex_sweet):
+            ingredient.type == 'sweet seasoning'
+        elif any(item in name for item in non_mex_savory):
+            ingredient.type == 'savory seasoning'
+        else:
+            ingredient.type == 'spicy seasoning'
+    elif any(item in name for item in mex_seasonings):
+        ingredient.flags.append('mexican')
     return ingredient
 
 def categorize_meat(ingredient):
@@ -315,6 +338,8 @@ def categorize_grain(ingredient):
         if name in white_bread:
             # white breads are made from refined grains which are ostensibly unhealthy
             ingredient.flags.append('unhealthy')
+        elif any(item in name for item in mex_bread):
+            ingredient.flags.append('mexican')
     elif any(item in name for item in pasta):
         ingredient.type = 'pasta'
         # pasta shall not be mexican, unless it is fideo
@@ -351,7 +376,7 @@ def categorize_fruits_and_vegetables(ingredient):
     name = ingredient.name.lower()
     if any(item in name for item in vegetables):
         ingredient.type = 'vegetable'
-        if not any(item in name for item in mex_veg):
+        if any(item in name for item in non_mex_veg):
             ingredient.flags.append('un-mexican')
     else:
         ingredient.type = 'fruit'
@@ -387,6 +412,8 @@ def categorize_base(ingredient):
         ingredient.type = 'base'
         if any(item in name for item in non_mex_bases):
             ingredient.flags.append('un-mexican')
+            if any(item in name for item in non_mex_condiments):
+                ingredient.type = 'condiment'
         elif any(item in name for item in mex_base):
             ingredient.flags.append('mexican')
         elif any(item in name for item in healthy_sugar):
@@ -407,6 +434,7 @@ def categorize_other(ingredient):
             ingredient.type = 'beans'
         else:
             ingredient.type = 'lentils'
+            ingredient.flags.append('un-mexican')
     else:
         ingredient.type = 'other'
     return ingredient
