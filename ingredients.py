@@ -142,8 +142,10 @@ def load_ingredients(soup):
     return r_list
 
 def make_ingredient(i):
-    measure_words = ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk','inch','cm','mm','centimeter','millimeter','square','can','bottle']
-    adj_exclude = ['sour','garlic']
+    measure_words = ['cup','teaspoon', 'tsp','tablespoon', 'tbsp','tbl''ounce','pound','clove', 'stalk','inch','cm','mm','centimeter','millimeter','square','can','bottle', 'glass', 'box', 'quart',
+                    'quarter','kernels', 'ears', 'bushels', 'drop', 'pail', 'pinch', 'celsius', 'fahrenheit', 'degrees' 'militer', 'pint', 'pt', 'litre','gram', 'gill',
+                    'gallon', 'ml','l','liter','mg', 'milligram','g','gram','kg', 'kilogram', 'meter', 'oz','lb', 'fluid ounce', 'dash']
+    adj_exclude = ['sour','garlic', 'spicy', 'sweet', 'bitter', 'crunchy','whip','sauteed', 'sautéed', 'glaze' ]
     avoid_list = []
     nlp = spacy.load('en_core_web_sm')
     info_struct = ingred()

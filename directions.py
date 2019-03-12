@@ -47,6 +47,11 @@ def load_directions(soup):
 # NEED TO MAKE USE OF INGREDIENT LIST TO BETTER CAPTURE INGREDIENTS IN DIRECTIONS
 
 def make_direction(step, names):
+    numerals = [' one ', ' two ', ' three ', ' four ', ' five ', ' six ', ' seven ',
+                ' eight ', ' nine ', ' ten ', ' eleven ', ' twelve ', ' dozen ']
+    numeral_fix = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6,
+                   'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10, 'eleven': 11,
+                   'twelve': 12, 'dozen': 12}
     cook_verbs = ['preheat', 'cook', 'broil', 'roast', 'drain', 'bake',
                   'rinse', 'melt', 'stir', 'mix', 'bake', 'simmer', 'season',
                   'sauté', 'poach', 'whisk', 'stew', 'grill']
@@ -58,6 +63,12 @@ def make_direction(step, names):
     agglomerations = ['mixture', 'sauce', 'contents', 'marinade', 'mix', 'bowl']
     direction = Direction()
     direction.text = step
+    if any(numeral in direction.text for numeral in numerals):
+        for numeral in numerals:
+            if numeral in direction.text:
+                find = numeral.strip()
+                replace = numeral_fix[find]
+                direction.text = direction.text.replace(numeral, ' ' + str(replace) + ' ')
     doc = nlp(direction.text)
     # tokenize each instructions step
     tokens = list(doc)
