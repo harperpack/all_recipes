@@ -25,4 +25,5 @@ def launch_recipes():
     print("Here is the transformed recipe!\n")
     print_recipe(recipe)
 
-launch_recipes()
+if __name__ == '__main__':
+    launch_recipes()

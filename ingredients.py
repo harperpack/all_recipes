@@ -142,7 +142,7 @@ def load_ingredients(soup):
     return r_list
 
 def make_ingredient(i):
-    measure_words = ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk']
+    measure_words = ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk','inch','cm','mm','centimeter','millimeter','square','can','bottle']
     adj_exclude = ['sour','garlic']
     avoid_list = []
     nlp = spacy.load('en_core_web_sm')
@@ -171,8 +171,13 @@ def make_ingredient(i):
             end_paren_ix = 1
             while tokens[end_paren_ix].text != ')':
                 end_paren_ix += 1
-            info_struct.unit = "".join(j.text+' ' for j in tokens[0:end_paren_ix+2] if j.pos_ != 'PUNCT').strip()
-            del tokens[0:end_paren_ix+2]
+            info_struct.unit = "".join(j.text+' ' for j in tokens[0:end_paren_ix+1] if j.pos_ != 'PUNCT').strip()
+            if tokens[end_paren_ix+1] in measure_words:
+                info_struct.unit = info_struct.unit.join(' ' + tokens[end_paren_ix+1])
+                del tokens[0:end_paren_ix+2]
+            else:
+                del tokens[0:end_paren_ix+1]
+            
     #deal with the 'or' case
     for j in range(0,len(tokens)-1):
         if tokens[j].text == 'or':
@@ -184,9 +189,9 @@ def make_ingredient(i):
     if len(chunk_list) > 0:
         for j in chunk_list[0].root.children:
             if j.tag_ == 'VBN':
-                info_struct.preprocessing.append(''.join(w.text_with_ws for w in j.subtree if w.pos_ not in ['NOUN','PUNCT']))
+                info_struct.preprocessing.append(''.join(w.text_with_ws for w in j.subtree if w.pos_ not in ['PUNCT'] and w != chunk_list[0].root))
                 for k in j.subtree:
-                    if k.pos_!='NOUN':
+                    if k != chunk_list[0].root:
                         avoid_list.append(k.text)
             elif j.pos_ == 'ADJ':
                 if j.text not in adj_exclude:
