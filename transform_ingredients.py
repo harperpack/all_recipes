@@ -22,12 +22,12 @@ def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
             # ADD FUNCTION?
             recipe.replace_ingredient(ingredient, 'portobello mushroom')
             # ADD FUNCTION?
-#            recipe.add_ingredient('black beans')
+            recipe.add_ingredient('black beans')
         else:
             # ADD FUNCTION?
             recipe.replace_ingredient(ingredient, 'seitan')
             # ADD FUNCTION?
-#            recipe.add_ingredient('tamari sauce')
+            recipe.add_ingredient('tamari sauce')
     elif ingredient.type == 'pork':
         if recipe.meal == 'stew':
             # ADD FUNCTION?
@@ -36,7 +36,8 @@ def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
             # ADD FUNCTION?
             recipe.replace_ingredient(ingredient, 'seitan')
             # ADD FUNCTION?
-#            recipe.add_ingredient(ingredient, 'TBD SPICE')
+            recipe.add_ingredient(ingredient, 'garlic powder')
+            recipe.add_ingredient(ingredient, 'paprika')
     elif ingredient.type == 'ham':
         if recipe.meal == 'roast':
             recipe.replace_ingredient(ingredient, new_name='Tofurky ham roast', old_name=ingredient.name, deflag=unflag)
@@ -44,21 +45,21 @@ def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
             # ADD FUNCTION?
             recipe.replace_ingredient(ingredient, 'seitan')
             # ADD FUNCTION?
-#            recipe.add_ingredient('salt')
+            recipe.add_ingredient('salt')
     elif ingredient.type == 'bacon':
         recipe.replace_ingredient(ingredient, new_name='vegetarian bacon', old_name='bacon', deflag=unflag)
     elif ingredient.type == 'processed meat':
         # ADD FUNCTION?
         recipe.replace_ingredient(ingredient, 'seitan')
         # ADD FUNCTION?
-#        recipe.add_ingredient('salt')
+        recipe.add_ingredient('salt')
     elif ingredient.type == 'poultry':
         if recipe.meal == 'roast':
             recipe.replace_ingredient(ingredient, 'eggplant')
         else:
             recipe.replace_ingredient(ingredient, 'jackfruit')
             # ADD FUNCTION?
-#            recipe.add_ingredient('brown lentils')
+            recipe.add_ingredient('brown lentils')
     elif ingredient.type == 'sausage':
         recipe.replace_ingredient(ingredient, new_name='vegetarian sausage', old_name='sausage', deflag=unflag)
     elif ingredient.type == 'shellfish':
@@ -83,16 +84,17 @@ def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
 
 def transform_healthy(recipe):
     recipe.transformations.append('Healthy')
-    fruits_or_vegetables = False
+    fruits_or_vegetables = 0
     for ingredient in recipe.ingredients:
         if 'unhealthy' in ingredient.flags:
+            print(ingredient.name)
             recipe, ingredient = transform_ingredient_healthy(recipe, ingredient)
-            if ingredient.type == 'fruit' or ingredient.type == 'vegetable':
-                fruits_or_vegetables = True
-    if not fruits_or_vegetables:
-        pass
+            print(ingredient.name)
+        if ingredient.type == 'fruit' or ingredient.type == 'vegetable':
+            fruits_or_vegetables = True
+    if fruits_or_vegetables < 4:
         # ADD FUNCTION
-#        recipe.add_ingredient('spinach')
+        recipe.add_ingredient('spinach')
     return recipe
 
 def transform_ingredient_healthy(recipe, ingredient):
@@ -134,6 +136,7 @@ def transform_ingredient_healthy(recipe, ingredient):
     elif ingredient.type == 'fat':
         recipe.replace_ingredient(ingredient, 'olive oil')
     elif ingredient.type == 'flour':
+        print("Being called")
         recipe.replace_ingredient(ingredient, new_name='whole wheat flour', old_name=ingredient.name, deflag=unflag)
     return recipe, ingredient
 
@@ -154,7 +157,7 @@ def transform_mexican(recipe):
                 mex_veg_and_frt += 1
             else:
                 mex_others += 1
-    if mex_seasonings + mex_veg_and_frt + mex_others < 5:
+    if mex_seasonings + mex_veg_and_frt + mex_others < 4:
         recipe.add_ingredient('avocado')
         recipe.add_ingredient('chili powder')
         recipe.add_ingredient('onion powder')
