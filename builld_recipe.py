@@ -24,16 +24,6 @@ common_words = ['the', 'of', 'and', 'for', 'by', 'or', 'that', 'but', 'then',
                 'in', 'our', 'your']
 
 class Recipe():
-    def __init__(self):
-        self.title = ''
-        self.servings = 0
-        self.ingredients = []
-        self.replaced = []
-        self.primary = ''
-        self.meal = ''
-        self.directions = []
-        self.transformations = []
-
     def __init__(self, url):
         self.title = ''
         self.servings = 0
@@ -44,38 +34,39 @@ class Recipe():
         self.directions = []
         self.transformations = []
 
-        # load the html from All Recipes
-        html = load_recipe(url)
-        # obtain recipe title
-        self.title = get_title(html)
-    #    print(recipe.title)
-        # obtain recipe serving size
-        self.servings = get_servings(html)
-    #    print(recipe.servings)
-        # load ingrediets
-        ingredients = load_ingredients(html)
-        for item in ingredients:
-            # instatiate each ingredient as ingredient object
-            ingredient = make_ingredient(item)
-            if ingredient:
-    #            print(ingredient.name)
-                # NEED TO DEFINE CATEGORIZE INGREDIENT
-                ingredient = categorize_ingredient(ingredient)
-    #            print(ingredient.type)
-                # add ingredient to recipe
-                self.ingredients.append(ingredient)
-        # load directions
-        directions = load_directions(html)
-        # build list of ingredient names to aid in parsing directions
-        names = [ingredient.name for ingredient in self.ingredients]
-        for step in directions:
-            # instantiate each direction as direction object
-            direction = make_direction(step, names)
-            if direction:
-                # add direction to self
-                self.directions.append(direction)
-        self.make_main_cook()
-        self.make_tool_list()
+        if url != '':
+            # load the html from All Recipes
+            html = load_recipe(url)
+            # obtain recipe title
+            self.title = get_title(html)
+        #    print(recipe.title)
+            # obtain recipe serving size
+            self.servings = get_servings(html)
+        #    print(recipe.servings)
+            # load ingrediets
+            ingredients = load_ingredients(html)
+            for item in ingredients:
+                # instatiate each ingredient as ingredient object
+                ingredient = make_ingredient(item)
+                if ingredient:
+        #            print(ingredient.name)
+                    # NEED TO DEFINE CATEGORIZE INGREDIENT
+                    ingredient = categorize_ingredient(ingredient)
+        #            print(ingredient.type)
+                    # add ingredient to recipe
+                    self.ingredients.append(ingredient)
+            # load directions
+            directions = load_directions(html)
+            # build list of ingredient names to aid in parsing directions
+            names = [ingredient.name for ingredient in self.ingredients]
+            for step in directions:
+                # instantiate each direction as direction object
+                direction = make_direction(step, names)
+                if direction:
+                    # add direction to self
+                    self.directions.append(direction)
+            self.make_main_cook()
+            self.make_tool_list()
 
 
 
@@ -131,7 +122,7 @@ class Recipe():
             step_no += 1
         print('------------------------------------')
         print("And here is our representation, partly:")
-        print("Primary cooking method: " + str(recipe.primary))
+        print("Primary cooking method: " + str(self.main_cook))
         self.print_ingredients()
 
 
@@ -210,6 +201,7 @@ class Recipe():
         new = categorize_ingredient(new)
         self.set_quantity(new)
         self.ingredients.append(new)
+        self.add_to_directions(new)
         #similars = self.find_similar(new)
 
     def set_quantity(self, ingredient):
@@ -224,7 +216,7 @@ class Recipe():
             ingredient.quantity = float(int(self.servings) / 4)
             ingredient.unit = 'cup'
             ingredient.descriptors = ['dry']
-            ingredient.preprocessing['soaked overnight']
+            ingredient.preprocessing = ['soaked overnight']
         elif 'avocado' in ingredient.name:
             ingredient.quantity = float(int(self.servings) / 2)
             ingredient.unit = 'discrete'
@@ -244,7 +236,7 @@ class Recipe():
 
     def add_to_directions(self, ingredient):
         tag = ingredient.type
-        names = [ingredient.name for ingredient in self.ingredients if ingredient.type == tag]
+        names = [i.name for i in self.ingredients if i.type == tag]
         for direction in self.directions:
             if any(name in direction.text for name in names):
                 for name in names:

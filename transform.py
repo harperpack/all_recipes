@@ -190,9 +190,9 @@ from transform_ingredients import transform_vegetarian, transform_healthy, trans
 
 def route_transformations(selection, recipe):
     if selection:
-        if isinstance(selection, list):
-            recipe = transform_multiple(selection, recipe)
-        elif isinstance(selection, str):
+#        if isinstance(selection, list):
+#            recipe = transform_multiple(selection, recipe)
+        if isinstance(selection, str):
             if selection == 'h':
                 recipe = transform_healthy(recipe)
             elif selection == 'v':
@@ -213,26 +213,4 @@ def route_transformations(selection, recipe):
 #                recipe = transform_spice(recipe)
 #            elif selection == 's':
 #                recipe = transform_spice(recipe, more = True)
-        elif isinstance(selection, float):
-            recipe = transform_scale(recipe, selection)
     return recipe
-
-def transform_scale(recipe, scale):
-    for ingredient in recipe.ingredients:
-        ingredient.quantity *= scale
-    for direction in recipe.directions:
-        tokens = None
-        if direction.ingredients:
-            for ingredient in direction.ingredients:
-                if ingredient.quantity < 1 and 'each' not in direction.text:
-                    if not tokens:
-                        doc = nlp(direction.text)
-                        tokens = list(doc)
-                    j = tokens.index(amount)
-                    if tokens[j+1] == 'of' and tokens[j+2] == 'the':
-                        continue
-                    ingredient.quantity *= scale
-    return recipe
-
-def transform_multiple(selections, recipe):
-    pass

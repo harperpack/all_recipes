@@ -22,9 +22,9 @@ multiple_choice = {0: {'h': '"Healthy"', 'n/a': "Not Applicable", 'x': 'Exit'},
                    1: {'v': 'Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
                    2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
                    3: {'+': 'More Servings', '-': 'Fewer Servings', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   4: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'est': '"East Asian"', 'n/a': "Not Applicable", 'x': 'Exit'}}
+                   4: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
 
-cuisines = {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'est': '"East Asian"'}
+cuisines = {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"'}
 
 resp = requests.get('https://www.allrecipes.com/recipe/8758/white-cheese-chicken-lasagna/')
 
@@ -114,8 +114,7 @@ def user_cuisines():
     cuisines = {'usa': '"American"', 
                 'ita': '"Italian"', 
                 'ind': '"Indian"', 
-                'mex': '"Mexican"',
-                'est': '"East Asian"'}
+                'mex': '"Mexican"'}
     print("We are pleased to offer several cuisines for you to choose from.")
     print("Please note that if you choose a cuisine which is highly similar " +
           " to the cuisine of your recipe, you may not see much of a difference!")
@@ -139,7 +138,7 @@ def user_multiple_choice(recipe):
                    1: {'v': 'Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
                    2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
                    3: {'+': 'More Servings', '-': 'Fewer Servings', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   4: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'est': '"East Asian"', 'n/a': "Not Applicable", 'x': 'Exit'}}
+                   4: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
     transforms = []
     for i in range(len(multiple_choice.keys())):
         print("Please find available transformations below (" + str(i) + "/" + str(len(multiple_choice.keys())-1) + ")")

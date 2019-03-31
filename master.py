@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Mar 10 19:37:17 2019
-
 @author: harper
 """
 
@@ -21,7 +20,7 @@ def launch_recipes():
     choice = user_options(r)
     transformation = user_confirmation(choice, r)
     r = route_transformations(transformation, r)
-    r.update_directions()
+    r.replace_directions()
     print("Here is the transformed recipe!\n")
     r.print_recipe()
 
