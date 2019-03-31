@@ -11,18 +11,16 @@ from bs4 import BeautifulSoup
 import requests
 import random
 
-transformations = {'h': '"Healthy"', 'v': 'Vegetarian', 'vgn': 'Vegan',
+transformations = {'h': '"Healthy"', 'u': 'Unhealthy', 'v': 'Vegetarian', 'vgn': 'Vegan', 'non': 'Non-Vegetarian',
                    'm': 'Add Meat', 's': 'Spicy', 'b': 'Bland', 
                    'a': 'Affordable', 'e': 'Expensive',
-                   '+': 'More Servings', '-': 'Fewer Servings',
                    'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
                    'n': 'Do Nothing', 'x': 'Exit'}
 
-multiple_choice = {0: {'h': '"Healthy"', 'n/a': "Not Applicable", 'x': 'Exit'}, 
-                   1: {'v': 'Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
+multiple_choice = {0: {'h': '"Healthy"', 'un': 'Unhealthy', 'n/a': "Not Applicable", 'x': 'Exit'}, 
+                   1: {'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
                    2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   3: {'+': 'More Servings', '-': 'Fewer Servings', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   4: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
+                   3: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
 
 cuisines = {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"'}
 
@@ -40,10 +38,9 @@ def user_initiation():
     return url
 
 def user_options(recipe):
-    transformations = {'h': '"Healthy"', 'v': 'Vegetarian', 'vgn': 'Vegan',
+    transformations = {'h': '"Healthy"', 'u': 'Unhealthy', 'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan',
                    'm': 'Add Meat', 's': 'Spicy', 'b': 'Bland', 
                    'a': 'Affordable', 'e': 'Expensive',
-                   '+': 'More Servings', '-': 'Fewer Servings',
                    'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
                    'n': 'Do Nothing', 'x': 'Exit'}
     print("Thank you for your interest in the " + recipe.title + " recipe!\n")
@@ -70,16 +67,15 @@ def user_options(recipe):
         return choice.lower()
 
 def user_confirmation(choice, recipe):
-    transformations = {'h': '"Healthy"', 'v': 'Vegetarian', 'vgn': 'Vegan',
+    transformations = {'h': '"Healthy"', 'u': 'Unhealthy', 'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan',
                    'm': 'Add Meat', 's': 'Spicy', 'b': 'Bland', 
                    'a': 'Affordable', 'e': 'Expensive',
-                   '+': 'More Servings', '-': 'Fewer Servings',
                    'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
                    'n': 'Do Nothing', 'x': 'Exit'}
     if choice == 'n':
         print("Got it.  We'll print the recipe as-is!\n")
         return None
-    elif choice not in ['+', '-', 'add', 'dif']:
+    elif choice not in ['add', 'dif']:
         if choice != 'm':
             print("Got it.  We'll transform the recipe to be " + transformations[choice].lower() + '.\n')
             #print("Fingers crossed it turns out well...")
@@ -88,27 +84,10 @@ def user_confirmation(choice, recipe):
             print("Got it.  We'll add meat to the recipe!\n")
             #print("Here's hoping that's just the right accoutrement!")
             return choice
-    elif choice in ['+', '-']:
-        return user_servings(recipe)
     elif choice == 'dif':
         return user_cuisines()
     elif choice == 'add':
         return user_multiple_choice(recipe)
-
-def user_servings(recipe):
-    print("The existing recipe calls for " + str(recipe.servings) + " servings.")
-    pref = input("How many servings would you like?  ")
-    while not pref.isdigit() and pref != '0':
-        print("We apologize; we cannot recognize your input.")
-        print("Please use only positive, non-zero integers, e.g., 4 or 99")
-        pref = input("How many servings would you like?  ")
-    scale = int(pref) / int(recipe.servings)
-    recipe.servings = int(pref)
-    if scale >= 1:
-        print("Got it.  We'll scale the recipe by " + str(int(scale)) + "x.\n")
-    else:
-        print("Got it.  We'll scale the recipe by " + str(scale) + "x.\n")
-    return scale
 
 def user_cuisines():
     cuisines = {'usa': '"American"', 
@@ -134,11 +113,10 @@ def user_cuisines():
     return choice.lower()
 
 def user_multiple_choice(recipe):
-    multiple_choice = {0: {'h': '"Healthy"', 'n/a': "Not Applicable", 'x': 'Exit'}, 
-                   1: {'v': 'Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
+    multiple_choice = {0: {'h': '"Healthy"', 'u': 'Unhealthy', 'n/a': "Not Applicable", 'x': 'Exit'}, 
+                   1: {'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
                    2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   3: {'+': 'More Servings', '-': 'Fewer Servings', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   4: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
+                   3: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
     transforms = []
     for i in range(len(multiple_choice.keys())):
         print("Please find available transformations below (" + str(i) + "/" + str(len(multiple_choice.keys())-1) + ")")
