@@ -170,6 +170,15 @@ class Recipe():
             if old_words not in new_words:
                 uniques.append(old_words)
         old.specified = uniques
+    
+    def revert_to_old(self, devolve):
+        # FOR UNDOING A TRANSFORMATION
+        sub = new_ingredient(devolve.old.name, devolve.old.quantity, devolve.old.unit, devolve.old.preprocessing, devolve.old.descriptors)
+        sub.type = devolve.old.type
+        sub.old = devolve
+        devolve.new = sub
+        self.identify_words_for_replacement(devolve, sub)
+        self.swap(devolve, sub)
 
     def replace_ingredient(self, old, new_name, old_name=None, deflag=None):
         # IF NOT OLD_NAME, IT'S A NEW INGREDIENT
@@ -295,17 +304,6 @@ def toMinute(q,u):
         return q[1] / 60
     return 0
 
-
-#                    if ' ' in ingredient.name:
-#                        pieces = ingredient.name.split(' ')
-#                        for piece in pieces:
-#                            if piece not in common_words:
-##                                print(piece)
-##                                print(direction.text)
-#                                if piece in direction.text:
-#                                    direction.text = direction.text.replace(piece, ingredient.new.name)
-#                    elif ingredient.name in direction.text:
-#                        direction.text = direction.text.replace(ingredient.name, ingredient.new.name)
 
 def load_recipe(url):
     resp = requests.get(url)
