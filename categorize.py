@@ -25,7 +25,8 @@ non_mex_cruc = ['artichoke', 'celery', 'asparagus', ]
 non_mex_starch = ['water chestnut', 'celeric', 'taro', 'yam']
 
 veg_subs = ['portobello mushroom', 'seitan', 'jackfruit', 'Tofurky', 'vegetarian',
-            'veggie', 'eggplant', 'shiitake mushrooms', 'tofu']
+            'veggie', 'eggplant', 'shiitake mushrooms', 'tofu', 'tempeh',
+            'textured vegetable protein', 'garden', 'quorn']
 
 veg = ['artichoke', 'asparagus', 'beet', 'bamboo shoots', 'bean sprouts', 'endive',
        'bell pepper', 'broccoli', 'sprouts', 'brussel sprouts', 'brussels sprouts',
@@ -321,6 +322,9 @@ def categorize_meat(ingredient):
         ingredient.type = 'red meat'
     elif 'pork' in name:
         ingredient.type = 'pork'
+    elif any(item in name for item in ['veggie', 'vegetable', 'vegetarian', 'vegetable-based', 'garden', 'mock']):
+        ingredient.type = 'analogue'
+        ingredient.flags.append('veg')
     elif any(item in name for item in processed_meat):
         if 'bacon' in name:
             ingredient.type = 'bacon'
