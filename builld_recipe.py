@@ -39,7 +39,6 @@ class Recipe():
             html = load_recipe(url)
             # obtain recipe title
             self.title = get_title(html)
-        #    print(recipe.title)
             # obtain recipe serving size
             self.servings = get_servings(html)
         #    print(recipe.servings)
