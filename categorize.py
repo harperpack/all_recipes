@@ -22,7 +22,10 @@ non_mex_veg = ['asparagus', 'beet', 'bamboo shoots', 'bean sprouts', 'endive',
 
 non_mex_cruc = ['artichoke', 'celery', 'asparagus', ]
 
-non_mex_starch = ['water chestnut', 'celeric', 'taro', 'yam', '']
+non_mex_starch = ['water chestnut', 'celeric', 'taro', 'yam']
+
+veg_subs = ['portobello mushroom', 'seitan', 'jackfruit', 'Tofurky', 'vegetarian',
+            'veggie', 'eggplant', 'shiitake mushrooms', 'tofu']
 
 veg = ['artichoke', 'asparagus', 'beet', 'bamboo shoots', 'bean sprouts', 'endive',
        'bell pepper', 'broccoli', 'sprouts', 'brussel sprouts', 'brussels sprouts',
@@ -285,6 +288,8 @@ def categorize_ingredient(ingredient):
     elif any(item in name for item in fruits_and_vegetables):
         # categorize the fruits and veggies
         return categorize_fruits_and_vegetables(ingredient)
+    elif any(item in name for item in veg_subs):
+        return categorize_veg_subs(ingredient)
     else:
         return categorize_other(ingredient)
 
@@ -390,6 +395,8 @@ def categorize_fruits_and_vegetables(ingredient):
         if any(item in name for item in mex_vegetables):
             if 'un-mexican' not in ingredient.flags:
                 ingredient.flags.append('mexican')
+        if any(item in name for item in veg_subs):
+            ingredient.flags.append('veg')
     else:
         ingredient.type = 'fruit'
         if not any(item in name for item in mex_fruit):
@@ -397,6 +404,8 @@ def categorize_fruits_and_vegetables(ingredient):
         elif any(item in name for item in mex_fruit):
             if 'un-mexican' not in ingredient.flags:
                 ingredient.flags.append('mexican')
+        elif any(item in name for item in veg_subs):
+            ingredient.flags.append('veg')
     return ingredient
 
 def categorize_base(ingredient):
@@ -412,6 +421,8 @@ def categorize_base(ingredient):
             ingredient.type = 'sauce'
         else:
             ingredient.type = 'base'
+            if any(item in name for item in ['vegetable', 'veggie']):
+                ingredient.flags.append('veg')
     elif any(item in name for item in unhealthy_bases):
         ingredient.flags.append('unhealthy')
         if any(item in name for item in sugars):
@@ -452,4 +463,9 @@ def categorize_other(ingredient):
             ingredient.flags.append('un-mexican')
     else:
         ingredient.type = 'other'
+    return ingredient
+
+def categorize_veg_subs(ingredient):
+    ingredient.type = 'meatswap'
+    ingredient.flags.append('veg')
     return ingredient
