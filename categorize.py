@@ -24,6 +24,9 @@ non_mex_cruc = ['artichoke', 'celery', 'asparagus', ]
 
 non_mex_starch = ['water chestnut', 'celeric', 'taro', 'yam', '']
 
+veg_subs = ['portobello mushroom', 'seitan', 'jackfruit', 'Tofurky', 'vegetarian',
+            'veggie', 'eggplant', 'shiitake mushrooms', 'tofu']
+
 veg = ['artichoke', 'asparagus', 'beet', 'bamboo shoots', 'bean sprouts', 'endive',
        'bell pepper', 'broccoli', 'sprouts', 'brussel sprouts', 'brussels sprouts',
        'cabbage', 'carrot', 'cassava', 'cauliflower', 'celery', 'corn', 'cucumber',

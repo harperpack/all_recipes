@@ -91,7 +91,7 @@ def transform_healthy(recipe):
             recipe, ingredient = transform_ingredient_healthy(recipe, ingredient)
             print(ingredient.name)
         if ingredient.type == 'fruit' or ingredient.type == 'vegetable':
-            fruits_or_vegetables = True
+            fruits_or_vegetables += 1
     if fruits_or_vegetables < 4:
         # ADD FUNCTION
         recipe.add_ingredient('spinach')
@@ -195,3 +195,13 @@ def transform_ingredient_mexican(recipe, ingredient):
     elif ingredient.type == 'condiment':
         recipe.replace_ingredient(ingredient, new_name='tomatillo salsa', old_name=ingredient.name, deflag=unflag)
     return recipe, ingredient
+
+def transform_nonveg(recipe):
+    recipe.transformations.append('Non-vegetarian')
+    for ingredient in recipe.ingredients:
+        if ingredient.old:
+            if 'non-veg' in ingredient.old.flags:
+                recipe.replace_ingredient(ingredient, new_name=ingredient., old_name=ingredient.name, deflag=unflag)
+        if 'non-veg' in ingredient.flags:
+            recipe, ingredient = transform_ingredient_vegetarian(recipe, ingredient, vgn)
+    return recipe
