@@ -15,6 +15,8 @@ def transform_vegetarian(recipe, vgn=False):
 
 def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
     unflag = ['non-veg']
+    if vgn:
+        unflag.append('non-vgn')
     if flagged:
         unflag.append(flagged)
     if ingredient.type == 'red meat':
@@ -75,6 +77,10 @@ def transform_ingredient_vegetarian(recipe, ingredient, vgn=None, flagged=None):
         elif 'blood' in ingredient.name or 'bone' in ingredient.name:
             # PRESENTLY UNSUPPORTED
             recipe.replace_ingredient(ingredient, 'vegetable bouillon cube')
+        elif 'sauce' in ingredient.name and vgn:
+            recipe.replace_ingredient(ingredient, new_name='tamari sauce', old_name=ingredient.name, deflag=unflag)
+        elif 'honey' in ingredient.name and vgn:
+            recipe.replace_ingredient(ingredient, new_name='agave syrup', old_name=ingredient.name, deflag=unflag)
         else:
             # PRESENTLY UNSUPPORTED
             recipe.replace_ingredient(ingredient, 'agar agar')
@@ -364,4 +370,28 @@ def transform_ingredient_unhealthy(recipe, ingredient):
             recipe.replace_ingredient(ingredient, new_name='white', old_name='whole', deflag=unflag)
     elif ingredient.type == 'carb':
         recipe.replace_ingredient(ingredient, new_name='white rice', old_name=ingredient.name, deflag=unflag)
+    return recipe, ingredient
+
+def transform_spicy(recipe):
+    recipe.add_ingredient('habanero') # NEEDS SUPPORT
+    recipe.add_ingredient('cayenne pepper') # NEEDS SUPPORT
+
+def transform_bland(recipe):
+    for ingredient in recipe.ingredients:
+        recipe, ingredient = transform_ingredient_bland(recipe, ingredient)
+    return recipe
+
+def transform_ingredient_bland(recipe, ingredient):
+    unflag = ['spicy']
+    if 'spicy' in ingredient.flags:
+        if 'seasoning' in ingredient.type:
+            ingredient.quantity /= 4
+            recipe.replace_ingredient(ingredient, new_name='white flour', old_name=ingredient.name, deflag=unflag)
+        elif 'base' in ingredient.type:
+            ingredient.quantity /= 4
+            recipe.replace_ingredient(ingredient, new_name='ketchup', old_name=ingredient.name, deflag=unflag)
+        elif ingredient.type == 'vegetable':
+            recipe.replace_ingredient(ingredient, new_name='iceberg lettuce', old_name=ingredient.name, deflag=unflag)
+    elif 'seasoning' in ingredient.type:
+        ingredient.quantity /= 4
     return recipe, ingredient

@@ -310,6 +310,7 @@ def categorize_seasoning(ingredient):
             ingredient.type == 'savory seasoning'
         else:
             ingredient.type == 'spicy seasoning'
+            ingredient.flags.append('spicy')
     if any(item in name for item in mex_seasonings):
         ingredient.flags.append('mexican')
     return ingredient
@@ -399,6 +400,8 @@ def categorize_fruits_and_vegetables(ingredient):
         if any(item in name for item in mex_vegetables):
             if 'un-mexican' not in ingredient.flags:
                 ingredient.flags.append('mexican')
+        if any(item in name for item in spicy_vegetables):
+            ingredient.flags.append('spicy')
         if any(item in name for item in veg_subs):
             ingredient.flags.append('veg')
     else:
