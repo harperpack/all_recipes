@@ -120,6 +120,19 @@ def rationalize_details(new, servings):
         new.unit = 'discrete'
         new.preprocessing = ['peeled', 'pitted', 'diced']
         new.descriptors = ['fresh']
+    elif 'beef' in new.name:
+        new.name = 'beef stew meat'
+        new.quantity = float(0.25 * int(servings))
+        new.unit = 'pound'
+        new.preprocessing = ['cubed']
+    elif 'pork' in new.name:
+        new.name = 'pork shoulder roast'
+        new.quantity = float(0.25 * int(servings))
+        new.unit = 'pound'
+    elif 'shrimp' in new.name:
+        new.quantity = float(0.25 * int(servings))
+        new.unit = 'pound'
+        new.preprocessing = ['peeled', 'deveined']
     return new
 
 def is_bad(tok):
@@ -131,8 +144,6 @@ def is_bad(tok):
     return False
 
 def load_ingredients(soup):
-#    resp = requests.get(url_string)
-#    soup = BeautifulSoup(resp.text, "lxml")
     results = soup.find_all('span', class_='recipe-ingred_txt')
     r_list = []
     for i in results:

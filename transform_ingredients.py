@@ -305,10 +305,10 @@ def transform_ingredient_nonveg(recipe, ingredient):
         elif 'tofu' in ingredient.name:
             recipe.replace_ingredient(ingredient, new_name='white meat chicken', old_name=ingredient.name, deflag=unflag)
         elif any(sub in ingredient.name for sub in ['seitan', 'tempeh', 'textured vegetable protein', 'quorn']):
-            recipe.replace_ingredient(ingredient, 'beef') ## NEED TO SUPPORT
+            recipe.replace_ingredient(ingredient, 'beef')
     elif ingredient.type == 'fruit':
         if 'jackfruit' in ingredient.name:
-            recipe.replace_ingredient(ingredient, 'pork tenderloin') ## NEED TO SUPPORT
+            recipe.replace_ingredient(ingredient, 'pork')
     elif ingredient.type == 'vegetable':
         other_meat = False
         for ingred in recipe.ingredients:
@@ -317,9 +317,9 @@ def transform_ingredient_nonveg(recipe, ingredient):
                 break
         if not other_meat:
             if 'take' in ingredient.name:
-                recipe.replace_ingredient(ingredient, 'shrimp') ## NEED TO SUPPORT
+                recipe.replace_ingredient(ingredient, 'shrimp')
             elif 'plant' in ingredient.name:
                 recipe.replace_ingredient(ingredient, new_name='white meat chicken', old_name=ingredient.name, deflag=unflag)
             elif 'mushroom' in ingredient.name:
-                recipe.replace_ingredient(ingredient, 'beef') ## NEED TO SUPPORT
+                recipe.replace_ingredient(ingredient, 'beef')
     return recipe, ingredient
