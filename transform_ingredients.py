@@ -136,7 +136,7 @@ def transform_ingredient_healthy(recipe, ingredient):
     elif ingredient.type == 'fat':
         recipe.replace_ingredient(ingredient, 'olive oil')
     elif ingredient.type == 'flour':
-        print("Being called")
+#        print("Being called")
         recipe.replace_ingredient(ingredient, new_name='whole wheat flour', old_name=ingredient.name, deflag=unflag)
     return recipe, ingredient
 
@@ -297,7 +297,7 @@ def transform_ingredient_nonveg(recipe, ingredient):
         else:
             recipe.replace_ingredient(ingredient, new_name='andouille sausage', old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'meatswap':
-        if 'Tofurky' in ingredient.name:
+        if 'ofurky' in ingredient.name:
             if 'turkey' in ingredient.name:
                 recipe.replace_ingredient(ingredient, new_name='roast turkey', old_name=ingredient.name, deflag=unflag)
             elif 'ham' in ingredient.name:
@@ -322,4 +322,46 @@ def transform_ingredient_nonveg(recipe, ingredient):
                 recipe.replace_ingredient(ingredient, new_name='white meat chicken', old_name=ingredient.name, deflag=unflag)
             elif 'mushroom' in ingredient.name:
                 recipe.replace_ingredient(ingredient, 'beef')
+    return recipe, ingredient
+
+def transform_unhealthy(recipe):
+    unhealthiness = 0
+    recipe.transformations.append('Unhealthy')
+    for ingredient in recipe.ingredients:
+        recipe, ingredient = transform_ingredient_unhealthy(recipe, ingredient)
+        if 'unhealthy' in ingredient.flags:
+            unhealthiness += 1
+    if unhealthiness < 5:
+        recipe.add_ingredient('cigarettes')
+    return recipe
+
+def transform_ingredient_unhealthy(recipe, ingredient):
+    unflag = []
+    if ingredient.type == 'poultry':
+        if 'breast' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='thigh', old_name='breast', deflag=unflag)
+        elif 'white' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='dark', old_name='white', deflag=unflag)
+    elif ingredient.type == 'analogue':
+        recipe.replace_ingredient(ingredient, 'spam')
+    elif ingredient.type == 'meatswap':
+        recipe.replace_ingredient(ingredient, 'spam')
+    elif ingredient.type == 'cheese':
+        ingredient.quantity *= 2
+    elif ingredient.type == 'dairy':
+        recipe.replace_ingredient(ingredient, new_name='heavy cream', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'bread':
+        recipe.replace_ingredient(ingredient, new_name='Wonder bread', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'sugar':
+        ingredient.quantity *= 2
+    elif ingredient.type == 'fat':
+        recipe.replace_ingredient(ingredient, new_name='partially hydrogenated vegetable oil', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'flour':
+        if 'whole' in ingredient.name or 'wheat' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='refined white flour', old_name=ingredient.name, deflag=unflag)
+    elif ingredient.type == 'pasta':
+        if 'whole' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='white', old_name='whole', deflag=unflag)
+    elif ingredient.type == 'carb':
+        recipe.replace_ingredient(ingredient, new_name='white rice', old_name=ingredient.name, deflag=unflag)
     return recipe, ingredient

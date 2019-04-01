@@ -465,6 +465,9 @@ def categorize_other(ingredient):
         else:
             ingredient.type = 'lentils'
             ingredient.flags.append('un-mexican')
+    elif 'cigarette' in ingredient.name:
+        ingredient.type = 'cigarette'
+        ingredient.flags.append('unhealthy')
     else:
         ingredient.type = 'other'
     return ingredient

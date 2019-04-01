@@ -26,6 +26,21 @@ class Direction:
         self.time_unit = ''
         self.ingredients = []
 
+def new_direction(text, d=None, a=None, dur=None, t=None, i=None):
+    new_dir = Direction()
+    new_dir.text = text
+    if d:
+        new_dir.device = d
+    if a:
+        new_dir.actions = a
+    if dur:
+        new_dir.duration = dur
+    if t:
+        new_dir.time_unit = t
+    if i:
+        new_dir.ingredients = i
+    return new_dir
+
 def load_directions(soup):
 #    resp = requests.get(url_string)
 #    soup = BeautifulSoup(resp.text, "lxml")

@@ -7,7 +7,7 @@ Created on Thu Mar  7 00:39:52 2019
 """
 
 from ingredients import load_ingredients, make_ingredient, new_ingredient, rationalize_details
-from directions import load_directions, make_direction
+from directions import load_directions, make_direction, new_direction
 from categorize import categorize_ingredient
 
 from bs4 import BeautifulSoup
@@ -241,18 +241,26 @@ class Recipe():
             ingredient.unit = 'cup'
             ingredient.descriptors = ['fresh']
             ingredient.preprocessing = ['washed', 'diced']
+        elif ingredient.type == 'cigarette':
+            ingredient.name = 'Marlboro Reds'
+            ingredient.quantity = 1
+            ingredient.unit = 'pack'
 
     def add_to_directions(self, ingredient):
         tag = ingredient.type
         names = [i.name for i in self.ingredients if i.type == tag]
         if not names:
-            self.ingredients.remove(ingredient)
-        for direction in self.directions:
-            if any(name in direction.text for name in names):
-                for name in names:
-                    if name in direction.text:
-                        direction.text = direction.text.replace(name, ingredient.name + ' and ' + name)
-                        break
+            if ingredient.type == 'cigarette':
+                new_direction(text="Open the pack of Marlboros, and smoke one cigarette after each bite of the meal.", i=ingredient)
+            else:
+                self.ingredients.remove(ingredient)
+        elif names:
+            for direction in self.directions:
+                if any(name in direction.text for name in names):
+                    for name in names:
+                        if name in direction.text:
+                            direction.text = direction.text.replace(name, ingredient.name + ' and ' + name)
+                            break
 
     def replace_directions(self):
         if self.replaced:

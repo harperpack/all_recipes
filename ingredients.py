@@ -133,6 +133,11 @@ def rationalize_details(new, servings):
         new.quantity = float(0.25 * int(servings))
         new.unit = 'pound'
         new.preprocessing = ['peeled', 'deveined']
+    elif 'spam' in new.name:
+        new.name = 'SPAM Classic'
+        new.quantity = float(0.5 * int(servings))
+        new.unit = '(12 ounce) can'
+        new.preprocessing = ['cut into cubes']
     return new
 
 def is_bad(tok):
