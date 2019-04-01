@@ -269,6 +269,7 @@ def transform_ingredient_eastasian(recipe, ingredient):
     return recipe, ingredient
 
 def transform_nonveg(recipe):
+    nonveg_flag = False
     recipe.transformations.append('Non-vegetarian')
     for ingredient in recipe.ingredients:
         if ingredient.old:
@@ -276,10 +277,12 @@ def transform_nonveg(recipe):
                 recipe.revert_to_old(ingredient)
         if 'veg' in ingredient.flags:
             recipe, ingredient = transform_ingredient_nonveg(recipe, ingredient)
+            nonveg_flag = True
+    if not nonveg_flag:
+        recipe.add_ingredient('bacon')
     return recipe
 
 def transform_ingredient_nonveg(recipe, ingredient):
-    name = ingredient.name.lower()
     unflag = ['veg']
     if ingredient.type == 'base':
         if 'vegetable' in ingredient.name:
@@ -287,13 +290,36 @@ def transform_ingredient_nonveg(recipe, ingredient):
         elif 'veggie' in ingredient.name:
             recipe.replace_ingredient(ingredient, new_name='beef', old_name='veggie', deflag=unflag)
     elif ingredient.type == 'analogue':
-        recipe.replace_ingredient(ingredient, new_name='andouille', old_name='sausage', deflag=unflag)
+        if 'burger' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='beef hamburger patties', old_name=ingredient.name, deflag=unflag)
+        elif 'bacon' in ingredient.name:
+            recipe.replace_ingredient(ingredient, new_name='bacon', old_name=ingredient.name, deflag=unflag)
+        else:
+            recipe.replace_ingredient(ingredient, new_name='andouille sausage', old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'meatswap':
         if 'Tofurky' in ingredient.name:
-            pass
+            if 'turkey' in ingredient.name:
+                recipe.replace_ingredient(ingredient, new_name='roast turkey', old_name=ingredient.name, deflag=unflag)
+            elif 'ham' in ingredient.name:
+                recipe.replace_ingredient(ingredient, new_name='roast ham', old_name=ingredient.name, deflag=unflag)
         elif 'tofu' in ingredient.name:
-            pass
-        elif any(sub in name for sub in ['seitan', 'tempeh', 'textured vegetable protein', 'garden', 'quorn']):
-            pass
-        ## 'portobello mushroom', 'seitan', 'jackfruit', '', 'eggplant', 'shiitake mushrooms', ''
-    elif
+            recipe.replace_ingredient(ingredient, new_name='white meat chicken', old_name=ingredient.name, deflag=unflag)
+        elif any(sub in ingredient.name for sub in ['seitan', 'tempeh', 'textured vegetable protein', 'quorn']):
+            recipe.replace_ingredient(ingredient, 'beef') ## NEED TO SUPPORT
+    elif ingredient.type == 'fruit':
+        if 'jackfruit' in ingredient.name:
+            recipe.replace_ingredient(ingredient, 'pork tenderloin') ## NEED TO SUPPORT
+    elif ingredient.type == 'vegetable':
+        other_meat = False
+        for ingred in recipe.ingredients:
+            if ingred.type in ['red meat', 'pork', 'bacon', 'sausage', 'ham', 'processed meat', 'fish', 'shellfish', 'poultry']:
+                other_meat = True
+                break
+        if not other_meat:
+            if 'take' in ingredient.name:
+                recipe.replace_ingredient(ingredient, 'shrimp') ## NEED TO SUPPORT
+            elif 'plant' in ingredient.name:
+                recipe.replace_ingredient(ingredient, new_name='white meat chicken', old_name=ingredient.name, deflag=unflag)
+            elif 'mushroom' in ingredient.name:
+                recipe.replace_ingredient(ingredient, 'beef') ## NEED TO SUPPORT
+    return recipe, ingredient

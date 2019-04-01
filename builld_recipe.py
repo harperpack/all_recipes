@@ -245,6 +245,8 @@ class Recipe():
     def add_to_directions(self, ingredient):
         tag = ingredient.type
         names = [i.name for i in self.ingredients if i.type == tag]
+        if not names:
+            self.ingredients.remove(ingredient)
         for direction in self.directions:
             if any(name in direction.text for name in names):
                 for name in names:
