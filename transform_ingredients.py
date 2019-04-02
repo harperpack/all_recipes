@@ -411,3 +411,13 @@ def transform_multiple(selections, recipe):
         elif selection == 'u':
             recipe = transform_unhealthy(recipe)
     return recipe
+
+def transform_meatier(recipe):
+    meat = False
+    for ingredient in recipe.ingredients:
+        if ingredient.type == 'meat':
+            ingredient.quantity *= 1.5
+            meat = True
+    if not meat:
+        recipe.add_ingredient('bacon')
+    return recipe
