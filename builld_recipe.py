@@ -209,8 +209,10 @@ class Recipe():
     def add_ingredient(self, name):
         new = new_ingredient(name)
         new = categorize_ingredient(new)
-        if 'cayenne' in new.name:
+        if 'powder' in new.name:
             new.type = 'seasoning'
+        if 'avocado' in new.name:
+            new.type = 'vegetable'
         self.set_quantity(new)
         if 'bacon' in new.name:
             new.type = 'seasoning'

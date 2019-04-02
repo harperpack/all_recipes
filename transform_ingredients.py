@@ -175,8 +175,8 @@ def transform_ingredient_mexican(recipe, ingredient):
             recipe.replace_ingredient(ingredient, new_name='allspice', old_name=ingredient.name, deflag=unflag)
         elif 'savory' in ingredient.type:
             recipe.replace_ingredient(ingredient, new_name='oregano', old_name=ingredient.name, deflag=unflag)
-        else:
-            recipe.replace_ingredient(ingredient, new_name='cayenne pepper', old_name=ingredient.name, deflag=unflag)
+#        else:
+#            recipe.replace_ingredient(ingredient, new_name='cayenne powder', old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'pasta':
         recipe.replace_ingredient(ingredient, new_name='fideo noodle', old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'carb':
