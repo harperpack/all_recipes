@@ -87,7 +87,7 @@ class Recipe():
         print("INGREDIENTS:")
     #    print_ingredients(recipe.ingredients)
         for ingredient in self.ingredients:
-            if ingredient.unit.strip() in ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch']:
+            if ingredient.unit.strip() in ['cup','teaspoon','tablespoon','ounce','pound','clove', 'stalk', 'pinch', 'pack', '(15 ounce) cans']:
                 output = "   " + str(ingredient.quantity).strip() + ' ' + ingredient.unit.strip()
             else:
                 if ingredient.unit == 'discrete':
@@ -261,19 +261,20 @@ class Recipe():
 
     def add_to_directions(self, ingredient):
         tag = ingredient.type
-        names = [i.name for i in self.ingredients if i.type == tag]
-        if not names:
-            if ingredient.type == 'cigarette':
-                new_direction(text="Open the pack of Marlboros, and smoke one cigarette after each bite of the meal.", i=ingredient)
-            else:
+        if tag == 'cigarette':
+            new_dir = new_direction(text="Open the Marlboros and smoke the entire pack.", i=ingredient)
+            self.directions.append(new_dir)
+        else:
+            names = [i.name for i in self.ingredients if i.type == tag]
+            if not names:
                 self.ingredients.remove(ingredient)
-        elif names:
-            for direction in self.directions:
-                if any(name in direction.text for name in names):
-                    for name in names:
-                        if name in direction.text:
-                            direction.text = direction.text.replace(name, ingredient.name + ' and ' + name)
-                            break
+            elif names:
+                for direction in self.directions:
+                    if any(name in direction.text for name in names):
+                        for name in names:
+                            if name in direction.text:
+                                direction.text = direction.text.replace(name, ingredient.name + ' and ' + name)
+                                break
 
     def replace_directions(self):
         if self.replaced:
