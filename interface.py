@@ -13,14 +13,13 @@ import random
 
 transformations = {'h': '"Healthy"', 'u': 'Unhealthy', 'v': 'Vegetarian', 'vgn': 'Vegan', 'non': 'Non-Vegetarian',
                    'm': 'Add Meat', 's': 'Spicy', 'b': 'Bland', 
-                   'a': 'Affordable', 'e': 'Expensive',
                    'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
                    'n': 'Do Nothing', 'x': 'Exit'}
 
 multiple_choice = {0: {'h': '"Healthy"', 'un': 'Unhealthy', 'n/a': "Not Applicable", 'x': 'Exit'}, 
                    1: {'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
                    2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   3: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
+                   3: {'est': '"East Asian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
 
 cuisines = {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"'}
 
@@ -90,9 +89,7 @@ def user_confirmation(choice, recipe):
         return user_multiple_choice(recipe)
 
 def user_cuisines():
-    cuisines = {'usa': '"American"', 
-                'ita': '"Italian"', 
-                'ind': '"Indian"', 
+    cuisines = {'est': '"East Asian"', 
                 'mex': '"Mexican"'}
     print("We are pleased to offer several cuisines for you to choose from.")
     print("Please note that if you choose a cuisine which is highly similar " +
@@ -116,7 +113,7 @@ def user_multiple_choice(recipe):
     multiple_choice = {0: {'h': '"Healthy"', 'u': 'Unhealthy', 'n/a': "Not Applicable", 'x': 'Exit'}, 
                    1: {'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
                    2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   3: {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
+                   3: {'est': '"East Asian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
     transforms = []
     for i in range(len(multiple_choice.keys())):
         print("Please find available transformations below (" + str(i) + "/" + str(len(multiple_choice.keys())-1) + ")")
