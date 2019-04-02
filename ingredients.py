@@ -138,6 +138,13 @@ def rationalize_details(new, servings):
         new.quantity = float(0.5 * int(servings))
         new.unit = '(12 ounce) can'
         new.preprocessing = ['cut into cubes']
+    elif 'agar' in new.name:
+        new.quantity = float(0.25 * int(servings))
+        new.unit = 'tablespoon'
+        new.descriptors = ['powdered']
+    elif 'bouillon' in new.name:
+        new.quantity = 1
+        new.unit = 'cube'
     return new
 
 def is_bad(tok):

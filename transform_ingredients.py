@@ -99,7 +99,6 @@ def transform_healthy(recipe):
         if ingredient.type == 'fruit' or ingredient.type == 'vegetable':
             fruits_or_vegetables += 1
     if fruits_or_vegetables < 4:
-        # ADD FUNCTION
         recipe.add_ingredient('spinach')
     return recipe
 
@@ -142,7 +141,6 @@ def transform_ingredient_healthy(recipe, ingredient):
     elif ingredient.type == 'fat':
         recipe.replace_ingredient(ingredient, 'olive oil')
     elif ingredient.type == 'flour':
-#        print("Being called")
         recipe.replace_ingredient(ingredient, new_name='whole wheat flour', old_name=ingredient.name, deflag=unflag)
     return recipe, ingredient
 
@@ -191,7 +189,7 @@ def transform_ingredient_mexican(recipe, ingredient):
         recipe.replace_ingredient(ingredient, new_name='sour cream', old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'vegetable':
         if 'bell pepper' in ingredient.name:
-            recipe.add_ingredient('1.0 jalapeño pepper')
+            recipe.add_ingredient('jalapeño pepper')
             recipe.add_ingredient('habanero pepper')
     elif ingredient.type == 'fruit':
         recipe.replace_ingredient(ingredient, 'avocado')
@@ -253,13 +251,13 @@ def transform_ingredient_eastasian(recipe, ingredient):
         recipe.replace_ingredient(ingredient, new_name='jasmine rice', old_name=ingredient.name, deflag=unflag)
     elif ingredient.type == 'vegetable':
         if 'bell pepper' in ingredient.name:
-            recipe.add_ingredient('1.0 bok choy')
-            recipe.add_ingredient('1.0 green wild onions')
+            recipe.add_ingredient('bok choy') # PROBABLY NEEDS SUPPORT
+            recipe.add_ingredient('green wild onions') # PROBABLY NEEDS SUPPORT
         if 'lettuce' in ingredient.name:
             recipe.replace_ingredient(ingredient, new_name='cabbage', old_name=ingredient.name, deflag=unflag)
         else:
-            recipe.add_ingredient('1.0 green wild onions')
-            recipe.add_ingredient('1.0 lemongrass')
+            recipe.add_ingredient('green wild onions') # PROBABLY NEEDS SUPPORT
+            recipe.add_ingredient('lemongrass') # PROBABLY NEEDS SUPPORT
     elif ingredient.type == 'base':
         if 'powder' in ingredient.name:
             recipe.replace_ingredient(ingredient, new_name='cinnamon powder', old_name=ingredient.name, deflag=unflag)
@@ -373,8 +371,8 @@ def transform_ingredient_unhealthy(recipe, ingredient):
     return recipe, ingredient
 
 def transform_spicy(recipe):
-    recipe.add_ingredient('habanero') # NEEDS SUPPORT
-    recipe.add_ingredient('cayenne pepper') # NEEDS SUPPORT
+    recipe.add_ingredient('habanero')
+    recipe.add_ingredient('cayenne powder')
 
 def transform_bland(recipe):
     for ingredient in recipe.ingredients:
@@ -395,3 +393,21 @@ def transform_ingredient_bland(recipe, ingredient):
     elif 'seasoning' in ingredient.type:
         ingredient.quantity /= 4
     return recipe, ingredient
+
+def transform_multiple(selections, recipe):
+    for selection in selections:
+        if selection == 'h':
+            recipe = transform_healthy(recipe)
+        elif selection == 'v':
+            recipe = transform_vegetarian(recipe)
+        elif selection == 'vgn':
+            recipe = transform_vegetarian(recipe, vgn = True)
+        elif selection == 'mex':
+            recipe = transform_mexican(recipe)
+        elif selection == 'est':
+            recipe = transform_eastasian(recipe)
+        elif selection == 'non':
+            recipe = transform_nonveg(recipe)
+        elif selection == 'u':
+            recipe = transform_unhealthy(recipe)
+    return recipe

@@ -208,6 +208,8 @@ class Recipe():
         new = new_ingredient(name)
         new = categorize_ingredient(new)
         self.set_quantity(new)
+        if 'bacon' in new.name:
+            new.type = 'seasoning'
         self.ingredients.append(new)
         self.add_to_directions(new)
         #similars = self.find_similar(new)
@@ -245,6 +247,11 @@ class Recipe():
             ingredient.name = 'Marlboro Reds'
             ingredient.quantity = 1
             ingredient.unit = 'pack'
+        elif 'bacon' in ingredient.name:
+            ingredient.quantity = float(int(self.servings) / 4)
+            ingredient.unit = 'pound'
+            ingredient.preprocessing = ['cooked', 'broken into crumbles']
+        
 
     def add_to_directions(self, ingredient):
         tag = ingredient.type

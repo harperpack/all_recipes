@@ -53,7 +53,8 @@ mex_fruit = ['avocado', 'tamarind', 'prickly pear', 'plantain', 'mango',
              'papaya']
 
 spicy_vegetables = ['guajillo', 'habanero', 'jalapeño', 'scotch bonnet', 'chili',
-                    'savina', 'tabasco', 'serrano', 'peperoncino', 'chipotle']
+                    'savina', 'tabasco', 'serrano', 'peperoncino', 'chipotle',
+                    'jalapeno', 'kimchi']
 
 mex_vegetables = mex_veg + spicy_vegetables
 
