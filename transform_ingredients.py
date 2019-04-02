@@ -371,6 +371,7 @@ def transform_ingredient_unhealthy(recipe, ingredient):
 def transform_spicy(recipe):
     recipe.add_ingredient('habanero')
     recipe.add_ingredient('cayenne powder')
+    return recipe
 
 def transform_bland(recipe):
     for ingredient in recipe.ingredients:
@@ -414,7 +415,10 @@ def transform_meatier(recipe):
     meat = False
     for ingredient in recipe.ingredients:
         if ingredient.type == 'meat':
-            ingredient.quantity *= 1.5
+            ingredient.quantity *= 2
+            meat = True
+        elif any(item in ingredient.name for item in ['meat', 'beef', 'chicken', 'sausage', 'pork', 'bacon', 'ham', 'poultry']):
+            ingredient.quantity *= 2
             meat = True
     if not meat:
         recipe.add_ingredient('bacon')

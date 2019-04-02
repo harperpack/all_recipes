@@ -31,7 +31,6 @@ def user_initiation():
 def user_options(recipe):
     transformations = {'h': '"Healthy"', 'u': 'Unhealthy', 'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan',
                    'm': 'Add Meat', 's': 'Spicy', 'b': 'Bland', 
-                   'a': 'Affordable', 'e': 'Expensive',
                    'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
                    'n': 'Do Nothing', 'x': 'Exit'}
     print("Thank you for your interest in the " + recipe.title + " recipe!\n")
@@ -60,7 +59,6 @@ def user_options(recipe):
 def user_confirmation(choice, recipe):
     transformations = {'h': '"Healthy"', 'u': 'Unhealthy', 'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan',
                    'm': 'Add Meat', 's': 'Spicy', 'b': 'Bland', 
-                   'a': 'Affordable', 'e': 'Expensive',
                    'dif': 'Different Cuisine', 'add': 'Select Multiple Transformations',
                    'n': 'Do Nothing', 'x': 'Exit'}
     if choice == 'n':

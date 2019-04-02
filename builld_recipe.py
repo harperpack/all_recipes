@@ -112,7 +112,7 @@ class Recipe():
                     i = ingredient.preprocessing.index(step)
                     output += ' ' + step.strip()
                     if i < max_index:
-                        output += 'and'
+                        output += ' and'
             print(output)
             output = ''
         print("\n")
@@ -209,6 +209,8 @@ class Recipe():
     def add_ingredient(self, name):
         new = new_ingredient(name)
         new = categorize_ingredient(new)
+        if 'cayenne' in new.name:
+            new.type = 'seasoning'
         self.set_quantity(new)
         if 'bacon' in new.name:
             new.type = 'seasoning'
@@ -222,7 +224,7 @@ class Recipe():
             ingredient.quantity = float(int(self.servings) / 2)
             ingredient.unit = 'teaspoon'
         elif 'seasoning' in ingredient.type:
-            ingredient.quantity = float(int(self.servings) / 3)
+            ingredient.quantity = float(int(int(self.servings) / 3))
             ingredient.unit = 'teaspoon'
         elif 'bean' in ingredient.name:
             ingredient.quantity = float(int(self.servings) / 4)
@@ -256,7 +258,7 @@ class Recipe():
         elif 'bacon' in ingredient.name:
             ingredient.quantity = float(int(self.servings) / 4)
             ingredient.unit = 'pound'
-            ingredient.preprocessing = ['cooked', 'broken into crumbles']
+            ingredient.preprocessing = ['cooked ', 'broken into crumbles']
         
 
     def add_to_directions(self, ingredient):
