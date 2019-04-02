@@ -217,7 +217,11 @@ class Recipe():
         #similars = self.find_similar(new)
 
     def set_quantity(self, ingredient):
-        if 'seasoning' in ingredient.type:
+        if 'tamari' in ingredient.name:
+            ingredient.type = 'seasoning'
+            ingredient.quantity = float(int(self.servings) / 2)
+            ingredient.unit = 'teaspoon'
+        elif 'seasoning' in ingredient.type:
             ingredient.quantity = float(int(self.servings) / 3)
             ingredient.unit = 'teaspoon'
         elif 'bean' in ingredient.name:
