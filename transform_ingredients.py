@@ -93,9 +93,7 @@ def transform_healthy(recipe):
     fruits_or_vegetables = 0
     for ingredient in recipe.ingredients:
         if 'unhealthy' in ingredient.flags:
-            print(ingredient.name)
             recipe, ingredient = transform_ingredient_healthy(recipe, ingredient)
-            print(ingredient.name)
         if ingredient.type == 'fruit' or ingredient.type == 'vegetable':
             fruits_or_vegetables += 1
     if fruits_or_vegetables < 4:

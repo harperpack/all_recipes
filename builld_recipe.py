@@ -29,8 +29,10 @@ class Recipe():
         self.servings = 0
         self.ingredients = []
         self.replaced = []
+        self.main_cook = ''
         self.primary = ''
         self.meal = ''
+        self.tool_list = []
         self.directions = []
         self.transformations = []
 
@@ -284,6 +286,7 @@ class Recipe():
         #want to find the a match in title and cook verbs
         for i in cook_verbs:
             if self.title.lower().find(i) != -1:
+                self.main_cook = i # IS THIS RIGHT?
                 return i
 
         maxDuration = 0
