@@ -6,12 +6,12 @@ Created on Sun Mar  3 14:07:04 2019
 @author: harper
 """
 
-from transform_ingredients import transform_vegetarian, transform_healthy, transform_mexican, transform_eastasian, transform_nonveg, transform_unhealthy
+from transform_ingredients import transform_vegetarian, transform_healthy, transform_mexican, transform_eastasian, transform_nonveg, transform_unhealthy, transform_multiple
 
 def route_transformations(selection, recipe):
     if selection:
-#        if isinstance(selection, list):
-#            recipe = transform_multiple(selection, recipe)
+        if isinstance(selection, list):
+            recipe = transform_multiple(selection, recipe)
         if isinstance(selection, str):
             if selection == 'h':
                 recipe = transform_healthy(recipe)

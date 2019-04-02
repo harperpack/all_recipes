@@ -21,15 +21,7 @@ multiple_choice = {0: {'h': '"Healthy"', 'un': 'Unhealthy', 'n/a': "Not Applicab
                    2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
                    3: {'est': '"East Asian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
 
-cuisines = {'usa': '"American"', 'ita': '"Italian"', 'ind': '"Indian"', 'mex': '"Mexican"'}
-
-resp = requests.get('https://www.allrecipes.com/recipe/8758/white-cheese-chicken-lasagna/')
-
-soup = BeautifulSoup(resp.text, "lxml")
-
-title = "Lasagna"
-meal = "Lunch"
-servings = 8
+cuisines = {'est': '"East Asian"', 'mex': '"Mexican"'}
 
 def user_initiation():
     print("Welcome to the AllRecipes Recipe Transformer.\n")
