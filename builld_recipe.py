@@ -271,8 +271,14 @@ class Recipe():
             self.directions.append(new_dir)
         else:
             names = [i.name for i in self.ingredients if i.type == tag]
+            names.remove(ingredient.name)
             if not names:
-                self.ingredients.remove(ingredient)
+                if tag != 'seasoning' and tag != 'base':
+                    phrase = "Serve the " + ingredient.name + " on the side."
+                    new_dir = new_direction(text=phrase, i=ingredient)
+                    self.directions.append(new_dir)
+                else:
+                    self.ingredients.remove(ingredient)
             elif names:
                 for direction in self.directions:
                     if any(name in direction.text for name in names):
