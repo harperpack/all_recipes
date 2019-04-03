@@ -143,6 +143,7 @@ def transform_ingredient_healthy(recipe, ingredient):
     return recipe, ingredient
 
 def transform_mexican(recipe):
+    recipe.transformations.append('"Mexican"')
     mex_seasonings = 0
     mex_veg_and_frt = 0
     mex_others = 0
@@ -204,6 +205,7 @@ def transform_ingredient_mexican(recipe, ingredient):
     return recipe, ingredient
 
 def transform_eastasian(recipe):
+    recipe.transformations.append('"East Asian"')
     est_seasonings = 0
     est_veg_and_frt = 0
     est_others = 0
@@ -369,11 +371,13 @@ def transform_ingredient_unhealthy(recipe, ingredient):
     return recipe, ingredient
 
 def transform_spicy(recipe):
+    recipe.transformations.append('Spicy')
     recipe.add_ingredient('habanero')
     recipe.add_ingredient('cayenne powder')
     return recipe
 
 def transform_bland(recipe):
+    recipe.transformations.append('Bland')
     for ingredient in recipe.ingredients:
         recipe, ingredient = transform_ingredient_bland(recipe, ingredient)
     return recipe
@@ -389,29 +393,34 @@ def transform_ingredient_bland(recipe, ingredient):
             recipe.replace_ingredient(ingredient, new_name='ketchup', old_name=ingredient.name, deflag=unflag)
         elif ingredient.type == 'vegetable':
             recipe.replace_ingredient(ingredient, new_name='iceberg lettuce', old_name=ingredient.name, deflag=unflag)
-    elif 'seasoning' in ingredient.type:
+    elif 'seasoning' in ingredient.type or 'bouillon' in ingredient.name:
         ingredient.quantity /= 4
     return recipe, ingredient
 
 def transform_multiple(selections, recipe):
     for selection in selections:
-        if selection == 'h':
-            recipe = transform_healthy(recipe)
-        elif selection == 'v':
-            recipe = transform_vegetarian(recipe)
-        elif selection == 'vgn':
-            recipe = transform_vegetarian(recipe, vgn = True)
-        elif selection == 'mex':
-            recipe = transform_mexican(recipe)
-        elif selection == 'est':
-            recipe = transform_eastasian(recipe)
-        elif selection == 'non':
-            recipe = transform_nonveg(recipe)
-        elif selection == 'u':
-            recipe = transform_unhealthy(recipe)
+        recipe = transform_multiple_routed(selection, recipe)
+    return recipe
+
+def transform_multiple_routed(selection, recipe):
+    if selection == 'h':
+        recipe = transform_healthy(recipe)
+    elif selection == 'v':
+        recipe = transform_vegetarian(recipe)
+    elif selection == 'vgn':
+        recipe = transform_vegetarian(recipe, vgn = True)
+#        elif selection == 'mex':
+#            recipe = transform_mexican(recipe)
+#        elif selection == 'est':
+#            recipe = transform_eastasian(recipe)
+    elif selection == 'non':
+        recipe = transform_nonveg(recipe)
+    elif selection == 'u':
+        recipe = transform_unhealthy(recipe)
     return recipe
 
 def transform_meatier(recipe):
+    recipe.transformations.append('Meatier')
     meat = False
     for ingredient in recipe.ingredients:
         if ingredient.type == 'meat':

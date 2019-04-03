@@ -252,7 +252,8 @@ class Recipe():
             ingredient.quantity = float(int(self.servings) / 4)
             ingredient.unit = 'cup'
             ingredient.descriptors = ['fresh']
-            ingredient.preprocessing = ['washed', 'diced']
+            if 'kimchi' not in ingredient.name:
+                ingredient.preprocessing = ['washed', 'diced']
         elif ingredient.type == 'cigarette':
             ingredient.name = 'Marlboro Reds'
             ingredient.quantity = 1

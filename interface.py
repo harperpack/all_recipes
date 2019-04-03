@@ -102,8 +102,8 @@ def user_cuisines():
 def user_multiple_choice(recipe):
     multiple_choice = {0: {'h': '"Healthy"', 'u': 'Unhealthy', 'n/a': "Not Applicable", 'x': 'Exit'}, 
                    1: {'v': 'Vegetarian', 'non': 'Non-Vegetarian', 'vgn': 'Vegan', 'm': 'Add Meat', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'},
-                   3: {'est': '"East Asian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
+                   2: {'s': 'Spicy', 'b': 'Bland', 'n/a': "Not Applicable", 'x': 'Exit'}}#,
+#                   3: {'est': '"East Asian"', 'mex': '"Mexican"', 'n/a': "Not Applicable", 'x': 'Exit'}}
     transforms = []
     for i in range(len(multiple_choice.keys())):
         print("Please find available transformations below (" + str(i) + "/" + str(len(multiple_choice.keys())-1) + ")")
